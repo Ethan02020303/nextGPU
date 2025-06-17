@@ -3,26 +3,6 @@
         "name": "MyApp",
         "comment": "This is a sample application configuration"
     },
-    "mysql": {
-        "Ip": "54.238.152.179",
-        "Port": 3306,
-        "DBName": "nextGPU",
-        "Charset": "utf8",
-        "UserName": "root",
-        "Password": "Welcome123!@#"
-    },
-    "aliOSS": {
-        "endpoint": "oss-accelerate.aliyuncs.com",
-        "accessKeyID": "LTAI5tQG8LKgqp3RGN4RAcV1",
-        "accessKeySecret": "JkXCNf8uyNdxH3fdZZGr2URbNa3PTe",
-        "bucketName": "ngpu"
-    },
-    "aliLogOSS": {
-        "endpoint": "oss-accelerate.aliyuncs.com",
-        "accessKeyID": "LTAI5tQG8LKgqp3RGN4RAcV1",
-        "accessKeySecret": "JkXCNf8uyNdxH3fdZZGr2URbNa3PTe",
-        "bucketName": "ngpu"
-    },
     "net": {
         "web": {
             "listen": "0.0.0.0:8080",
@@ -39,25 +19,6 @@
             "listen": "0.0.0.0:8082",
             "domain": "192.168.124.3"
         }
-    },
-    "measure": {
-        "unPassPercent": 0.2,
-        "measureCount": 2,
-        "measureWidth": 512,
-        "measureHeight": 512
-    },
-    "minRequest": {
-        "memory": 8589934592,
-        "core": 8
-    },
-    "aiTask": {
-        "aiTaskRecheckDays": 1,
-        "maxRetryCount": 3
-    },
-    "clientVersion": {
-        "version": "1.0.1",
-        "createTime": "2025-05-13",
-        "domain": "http://192.168.124.3:8080",
-        "updateFile": "/root/go/src/github.com/crowdcomputed/cc-cloud/client.json"
     }
+
 }
