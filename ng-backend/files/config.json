@@ -1,0 +1,10 @@
+{
+    "application": {
+        "name": "MyApp",
+        "comment": "This is a sample application configuration"
+    },
+    "web": {
+        "validate": "http://192.168.124.3:8080/node/validate",
+        "enroll": "http://192.168.124.3:8080/node/enroll"
+    }
+}
