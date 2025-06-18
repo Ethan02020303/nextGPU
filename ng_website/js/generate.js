@@ -306,16 +306,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     //获取登录信息
-    const userName = localStorage.getItem('userName');
-    if(userName !== "") {
-        // 获取用户信息
+    const {logined, userName} = checkLoginStatus();
+    if(logined) {
         sendUserInfo(userName)
-        // 渲染生成的卡片
         const tasks = await sendMyTask(userName);
         renderModelsGroupedByDate(tasks);
     }else{
         sendUserInfo()
     }
+
     // 比例选择交互
     const options = document.querySelectorAll('.ratio-option');
     options.forEach(option => {

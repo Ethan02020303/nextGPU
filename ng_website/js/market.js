@@ -227,13 +227,13 @@ function renderModels(models) {
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        const userName = localStorage.getItem('userName');
-        if(userName !== "") {
-            // 获取用户信息
+        const {logined, userName} = checkLoginStatus();
+        if(logined){
             sendUserInfo(userName)
         }else{
             sendUserInfo()
         }
+
         // 渲染分类标签
         const categories = await fetchCategories();
         renderCategories(categories);

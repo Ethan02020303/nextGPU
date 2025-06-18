@@ -26,14 +26,23 @@ function showUserLoading(show) {
     }
 }
 
-// 添加自动执行功能
-document.addEventListener('DOMContentLoaded', function() {
-    // 检查是否存在用户信息区域
-    if (document.getElementById('user-avatar') && document.getElementById('user-name')) {
-        const currentUser = localStorage.getItem('currentUser');
-        sendUserInfo(currentUser);
-        setInterval(() => {
-            fetchUserInfo(currentUser);
-        }, 60 * 1000);
+// 检查登录状态
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn === 'true') {
+        const username = localStorage.getItem('userName');
+        return {logined: true, userName: username}
     }
-});
+    return false, ""
+}
+
+function setLoginStatus(logined, userName) {
+    if(logined){
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userName', userName);
+    }else{
+        localStorage.setItem('isLoggedIn', 'false');
+        localStorage.setItem('userName', '');
+    }
+}
+

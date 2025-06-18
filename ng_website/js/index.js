@@ -126,6 +126,18 @@ function loadData() {
 document.addEventListener('DOMContentLoaded', async function() {
     //加载数据
     loadData();
+
+    //判断用户是否已经登录
+    const {logined, userName} = checkLoginStatus();
+    if (logined) {
+        loginMessage.style.display = 'none';
+        document.querySelector('.auth-buttons').innerHTML = `
+            <a href="#" class="btn btn-primary">
+                <i class="fas fa-user-circle"></i> ${username}
+            </a>
+        `;
+    }
+
     // 移动端菜单切换
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('nav');
@@ -282,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (username && password) {
             const res = await sendLogin(username, password);
             if(res.codeId === 200) {
-                localStorage.setItem('userName', username);
+                setLoginStatus(true, username)
                 loginMessage.style.display = 'none';
                 document.querySelector('.auth-buttons').innerHTML = `
                     <a href="#" class="btn btn-primary">
