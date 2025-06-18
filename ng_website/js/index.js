@@ -130,10 +130,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     //判断用户是否已经登录
     const {logined, userName} = checkLoginStatus();
     if (logined) {
-        loginMessage.style.display = 'none';
         document.querySelector('.auth-buttons').innerHTML = `
             <a href="#" class="btn btn-primary">
-                <i class="fas fa-user-circle"></i> ${username}
+                <i class="fas fa-user-circle"></i> ${userName}
             </a>
         `;
     }
