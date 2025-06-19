@@ -1,0 +1,7 @@
+{
+    "application": {
+        "name": "MyApp",
+        "comment": "This is a sample application configuration",
+        "updateUrl": "http://54.238.152.179:9080/node/update"
+    }
+}

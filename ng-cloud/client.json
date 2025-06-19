@@ -1,0 +1,20 @@
+{
+  "version": "1.0.1",
+  "createTime": "2025-05-13",
+  "files": [
+    {
+      "url": "http://54.238.152.179:8080/files/ng_client",
+      "cloudPath": "files/ng_client",
+      "localPath": "ng_client",
+      "md5": "30cc031b1a776fa8ceb0b0269dadae16",
+      "start": true
+    },
+    {
+      "url": "http://54.238.152.179:8080/files/config.json",
+      "cloudPath": "files/config.json",
+      "localPath": "config.json",
+      "md5": "bb6ac407e250bcb4193de040dca1e244",
+      "start": false
+    }
+  ]
+}

@@ -86,11 +86,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    
-    // // 用户数据模拟
-    // document.getElementById('user-credits').textContent = '2500';
-    // document.getElementById('user-workflows').textContent = '14';
-    // document.getElementById('user-images').textContent = '237';
-    // document.getElementById('user-storage').textContent = '2.3GB/5GB';
 });

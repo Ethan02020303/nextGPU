@@ -1,0 +1,10 @@
+{
+    "LogLevel" : "debug",
+    "FileWriter" : {
+        "LogPath" : "log/ng_client-%Y%M%D.log",
+        "On": true
+    },
+    "ConsoleWriter" : {
+        "On" : true
+    }
+}

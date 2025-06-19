@@ -179,11 +179,14 @@ function renderModels(models) {
         const badge = clone.querySelector('.model-badge');
         if (model.badge === 0) {
             badge.textContent = "免费";
-            badge.style.backgroundColor = "#f59e0b";
-        } else if (model.badge === 1) {
+            badge.style.backgroundColor = "#f97316";
+        }else if (model.badge === 1) {
             badge.textContent = "提成";
-            badge.style.backgroundColor = "#2563eb";
-        }  else {
+            badge.style.backgroundColor = "#f59e0b";
+        } else if (model.badge === 2) {
+            badge.textContent = "审核中";
+            badge.style.backgroundColor = "#9e9e9e";
+        }else {
             badge.style.display = "none";
         }
         // 设置标题
@@ -211,7 +214,6 @@ function renderModels(models) {
         };
         stats.querySelector('.downloads').textContent = `${formatCount(model.downloadCount)} 使用`;
         stats.querySelector('.likes').textContent = `${formatCount(model.likeCount)} 点赞`;
-        // stats.querySelector('.comments').textContent = `${formatCount(model.commentCount)} 评论`;
 
         //添加点击跳转
         const card = clone.querySelector('.model-card');

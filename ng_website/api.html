@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nextGPU - API开放平台</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/api.css">
 </head>
@@ -132,8 +134,6 @@
                     <button class="tab-button active" data-tab="python">Python</button>
                     <button class="tab-button" data-tab="javascript">JavaScript</button>
                     <button class="tab-button" data-tab="curl">cURL</button>
-                    <button class="tab-button" data-tab="java">Java</button>
-                    <button class="tab-button" data-tab="php">PHP</button>
                 </div>
                 
                 <!-- Python代码示例 -->
@@ -149,23 +149,26 @@
 <span class="code-keyword">import</span> json
 
 <span class="code-comment"># API端点</span>
-url = <span class="code-string">"https://api.nextgpu.com/v1/images/generations"</span>
+url = <span class="code-string">"http://nextgpu.aihub.cool:9080/session/publish"</span>
 
 <span class="code-comment"># 请求头</span>
 headers = {
     <span class="code-string">"Content-Type"</span>: <span class="code-string">"application/json"</span>,
-    <span class="code-string">"Authorization"</span>: <span class="code-string">"Bearer YOUR_API_KEY"</span>
 }
 
 <span class="code-comment"># 请求体</span>
-data = {
-    <span class="code-param">"prompt"</span>: <span class="code-string">"A beautiful landscape with mountains and a lake, digital art"</span>,
-    <span class="code-param">"model"</span>: <span class="code-string">"star-3-alpha"</span>,
-    <span class="code-param">"size"</span>: <span class="code-string">"1024x1024"</span>,
-    <span class="code-param">"steps"</span>: 20,
-    <span class="code-param">"guidance_scale"</span>: 7.5,
-    <span class="code-param">"num_images"</span>: 1
-}
+<pre class="json-code">{
+    <span class="code-key">"title"</span>: <span class="code-string">"Image generation"</span>,<span class="code-comment">  //工作流名称</span>
+    <span class="code-key">"imageCount"</span>: <span class="code-number">3</span>,<span class="code-comment">              //生成图片数量</span>
+    <span class="code-key">"imagePath"</span>: <span class="code-string">"2025/06"</span>,<span class="code-comment">       //图片在OSS存储路径</span>
+    <span class="code-key">"taskID"</span>: <span class="code-string">"nextGPU20250531145458888"</span>,<span class="code-comment"> //任务ID</span>
+    <span class="code-key">"data"</span>: {
+        <span class="code-key">"parameters"</span>: {
+            <span class="code-key">"imageRatio"</span>: <span class="code-string">"16:9"</span>,<span class="code-comment">//图片比例</span>
+            <span class="code-key">"promptText"</span>: <span class="code-string">"A little boy running"</span><span class="code-comment">//描述词</span>
+        }
+    }
+}</pre>
 
 <span class="code-comment"># 发送请求</span>
 response = requests.post(<span class="code-url">url</span>, headers=<span class="code-param">headers</span>, json=<span class="code-param">data</span>)
@@ -194,16 +197,20 @@ response = requests.post(<span class="code-url">url</span>, headers=<span class=
 <span class="code-keyword">const</span> fetch = require('node-fetch');
 
 <span class="code-comment">// API端点</span>
-<span class="code-keyword">const</span> url = <span class="code-string">"https://api.nextgpu.com/v1/images/generations"</span>;
+<span class="code-keyword">const</span> url = <span class="code-string">"http://nextgpu.aihub.cool:9080/session/publish"</span>;
 
 <span class="code-comment">// 请求参数</span>
-<span class="code-keyword">const</span> data = {
-  prompt: <span class="code-string">"A beautiful landscape with mountains and a lake, digital art"</span>,
-  model: <span class="code-string">"star-3-alpha"</span>,
-  size: <span class="code-string">"1024x1024"</span>,
-  steps: 20,
-  guidance_scale: 7.5,
-  num_images: 1
+<span class="code-keyword">const</span> {
+    title: <span class="code-string">"Image generation"</span>,<span class="code-comment">  //工作流名称</span>
+    imageCount: <span class="code-string">3</span>,<span class="code-comment">  //生成图片数量</span>
+    imagePath: <span class="code-string">"2025/06"</span>,<span class="code-comment">  //图片在OSS存储路径</span>
+    taskID: <span class="code-string">"nextGPU20250531145458888"</span>,<span class="code-comment">  //任务ID</span>
+    <span class="code-key">"data"</span>: {
+        <span class="code-key">"parameters"</span>: {
+            <span class="code-key">"imageRatio"</span>: <span class="code-string">"16:9"</span>,<span class="code-comment">//图片比例</span>
+            <span class="code-key">"promptText"</span>: <span class="code-string">"A little boy running"</span><span class="code-comment">//描述词</span>
+        }
+    }
 };
 
 <span class="code-comment">// 发送请求</span>
@@ -239,187 +246,22 @@ curl -X POST "https://api.nextgpu.com/v1/images/generations" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "prompt": "A beautiful landscape with mountains and a lake, digital art",
-    "model": "star-3-alpha",
-    "size": "1024x1024",
-    "steps": 20,
-    "guidance_scale": 7.5,
-    "num_images": 1
-  }'</pre>
+    "title": "Image generation", 
+    "imageCount": 3,
+    "imagePath": "2025/05",
+    "taskID": "nextGPU20250531145458888",
+    "data": {
+        "parameters": {
+            "imageRatio": "16:9",
+            "promptText": "A little boy running"
+        }
+    }
+}'</pre>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Java代码示例 -->
-                <div id="java" class="tab-content">
-                    <div class="api-demo-section">
-                        <div class="api-demo-block">
-                            <div class="api-demo-code-header">
-                                <span class="code-lang">Java</span>
-                                <button class="copy-btn">复制代码</button>
-                            </div>
-                            <pre class="api-demo-code">
-<span class="code-keyword">import</span> java.net.URI;
-<span class="code-keyword">import</span> java.net.http.HttpClient;
-<span class="code-keyword">import</span> java.net.http.HttpRequest;
-<span class="code-keyword">import</span> java.net.http.HttpResponse;
-
-<span class="code-keyword">public</span> class NextGPUApiExample {
-    <span class="code-keyword">public</span> static void main(String[] args) {
-        <span class="code-comment">// API端点</span>
-        String url = <span class="code-string">"https://api.nextgpu.com/v1/images/generations"</span>;
-        
-        <span class="code-comment">// 请求体JSON</span>
-        String jsonBody = <span class="code-string">"{"</span> +
-            <span class="code-string">"\"prompt\": \"A beautiful landscape with mountains and a lake, digital art\","</span> +
-            <span class="code-string">"\"model\": \"star-3-alpha\","</span> +
-            <span class="code-string">"\"size\": \"1024x1024\","</span> +
-            <span class="code-string">"\"steps\": 20,"</span> +
-            <span class="code-string">"\"guidance_scale\": 7.5,"</span> +
-            <span class="code-string">"\"num_images\": 1"</span> +
-        <span class="code-string">"}"</span>;
-        
-        <span class="code-comment">// 创建HTTP请求</span>
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header(<span class="code-string">"Content-Type"</span>, <span class="code-string">"application/json"</span>)
-            .header(<span class="code-string">"Authorization"</span>, <span class="code-string">"Bearer YOUR_API_KEY"</span>)
-            .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-            .build();
-        
-        <span class="code-comment">// 发送请求并处理响应</span>
-        HttpClient client = HttpClient.newHttpClient();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(response -> {
-                <span class="code-comment">// 解析响应JSON获取图像URL</span>
-                <span class="code-comment">// 这里简化处理，实际应用中应使用JSON解析库</span>
-                System.out.println(<span class="code-string">"图像生成成功! 响应内容:"</span> + response);
-            })
-            .exceptionally(e -> {
-                System.err.println(<span class="code-string">"请求失败: "</span> + e.getMessage());
-                return null;
-            })
-            .join();
-    }
-}</pre>
-                        </div>
-                    </div>
-                </div>
                 
-                <!-- PHP代码示例 -->
-                <div id="php" class="tab-content">
-                    <div class="api-demo-section">
-                        <div class="api-demo-block">
-                            <div class="api-demo-code-header">
-                                <span class="code-lang">PHP</span>
-                                <button class="copy-btn">复制代码</button>
-                            </div>
-                            <pre class="api-demo-code">
-<span class="code-keyword">&lt;?php</span>
-<span class="code-comment">// API端点</span>
-$url = <span class="code-string">'https://api.nextgpu.com/v1/images/generations'</span>;
-
-<span class="code-comment">// 请求头</span>
-$headers = [
-    <span class="code-string">'Content-Type: application/json'</span>,
-    <span class="code-string">'Authorization: Bearer YOUR_API_KEY'</span>
-];
-
-<span class="code-comment">// 请求体</span>
-$data = [
-    <span class="code-string">'prompt'</span> => <span class="code-string">'A beautiful landscape with mountains and a lake, digital art'</span>,
-    <span class="code-string">'model'</span> => <span class="code-string">'star-3-alpha'</span>,
-    <span class="code-string">'size'</span> => <span class="code-string">'1024x1024'</span>,
-    <span class="code-string">'steps'</span> => 20,
-    <span class="code-string">'guidance_scale'</span> => 7.5,
-    <span class="code-string">'num_images'</span> => 1
-];
-
-<span class="code-comment">// 初始化cURL</span>
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-<span class="code-comment">// 发送请求</span>
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-<span class="code-keyword">if</span> (curl_errno($ch)) {
-    <span class="code-comment">// 处理cURL错误</span>
-    echo <span class="code-string">'请求失败: '</span> . curl_error($ch);
-} <span class="code-keyword">else</span> {
-    <span class="code-keyword">if</span> ($httpCode == 200) {
-        <span class="code-comment">// 解析响应</span>
-        $result = json_decode($response, true);
-        $imageUrl = $result[<span class="code-string">'data'</span>][0][<span class="code-string">'url'</span>];
-        echo <span class="code-string">"图像生成成功! 访问URL: $imageUrl"</span>;
-    } <span class="code-keyword">else</span> {
-        echo <span class="code-string">"请求失败，HTTP状态码: $httpCode"</span>;
-        echo <span class="code-string">"错误信息: $response"</span>;
-    }
-}
-
-<span class="code-comment">// 关闭cURL资源</span>
-curl_close($ch);
-<span class="code-keyword">?&gt;</span></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <!-- API定价卡片 -->
                 <div class="api-card">
                     <div class="card-header">
@@ -435,14 +277,6 @@ curl_close($ch);
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td rowspan="2">星流Star - 3 Alpha</td>
-                                    <td>0.005元/M px/Step</td>
-                                    <td>0.1元/10积分，1024x1024，20 Steps</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><small>非固定消耗，与生成图片使用的模型和参数有关，<a href="#">查看计费规则</a></small></td>
-                                </tr>
                                 <tr>
                                     <td>nextGPU AI自定义模型</td>
                                     <td>0.0055元/M px/Step</td>
@@ -466,16 +300,7 @@ curl_close($ch);
                     <div class="card-content faq-content">
                         <div class="faq-item">
                             <div class="faq-question">
-                                <span>1、API积分和LiblibAI的生图/训练会员的算力通用吗？</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>不通用，API积分是独立的，仅用于API调用消耗。</p>
-                            </div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span>2、是否支持对公打款？</span>
+                                <span>1、是否支持对公打款？</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="faq-answer">
@@ -484,7 +309,7 @@ curl_close($ch);
                         </div>
                         <div class="faq-item">
                             <div class="faq-question">
-                                <span>3、是否可开发票？</span>
+                                <span>2、是否可开发票？</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="faq-answer">
@@ -493,7 +318,7 @@ curl_close($ch);
                         </div>
                         <div class="faq-item">
                             <div class="faq-question">
-                                <span>4、是否支持退款？</span>
+                                <span>3、是否支持退款？</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
                             <div class="faq-answer">
@@ -502,14 +327,8 @@ curl_close($ch);
                         </div>
                     </div>
                 </div>
-
-
+            </div>           
             </div>
-
-
-            
-            </div>
-
         </div>
     </div>
     <script src="js/base.js"></script>

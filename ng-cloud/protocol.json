@@ -1,0 +1,71 @@
+{
+  # 获取输入信息
+  "inputs": [
+    {
+      "key": "step",
+      "value": "3->inputs->steps"
+    },
+    {
+      "key": "imageNum",
+      "value": "5->inputs->batch_size"
+    },
+    {
+      "key": "ratio",
+      "value": "5->inputs->width"
+    }
+  ],
+  # 获取输出
+  "outputs": [
+
+  ],
+  # 统一生成(针对一个任务，cloud端生成相同的内容)
+  "shares": [
+    "3->inputs->seed"
+  ],
+  # 用户一个设置，修改两个参数（用户使用 1:1，则修改 5->inputs->width和5->inputs->height）
+  "options": [
+    {
+      "key": "proportion",
+      "mode": "1:1",
+      "paths": [
+        "5->inputs->width",
+        "5->inputs->height"
+      ],
+      "values": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "key": "proportion",
+      "mode": "16:9",
+      "paths": [
+        "5->inputs->width",
+        "5->inputs->height"
+      ],
+      "values": [
+        1920,
+        1080
+      ]
+    }
+  ],
+  # 单独设置（让path的值变为用户指定内容）
+  "bindings": [
+    {
+      "key": "width",
+      "value": "5->inputs->width"
+    },
+    {
+      "key": "height",
+      "value": "5->inputs->height"
+    },
+    {
+      "key": "batch_size",
+      "value": "5->inputs->batch_size"
+    },
+    {
+      "key": "steps",
+      "value": "3->inputs->steps"
+    }
+  ]
+}

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nextGPU - 利用闲散算力支持AI工作流</title>
+    <!-- 添加网站图标 -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
 </head>
@@ -21,7 +24,7 @@
             <nav>
                 <ul>
                     <li><a href="#">首页</a></li>
-                    <li><a href="files/nextGPU.pptx">Deck信息</a></li>
+                    <li><a href="files/nextGPU.pptx">Deck中心</a></li>
                     <li><a href="market.html">一键生成</a></li>
                     <li><a href="#">算力节点</a></li>
                 </ul>
@@ -39,7 +42,7 @@
         <div class="blob two"></div>
         <div class="container hero-content">
             <div class="hero-text">
-                <h1>使用闲散GPU算力满足AI工作流需求</h1>
+                <h1>利用闲置GPU算力赋能AI工作流</h1>
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <a href="market.html" class="btn btn-primary">一键生成</a>
                     <a href="#" class="btn btn-outline">算力安装脚本</a>
@@ -251,9 +254,7 @@
                 </table>
             </div>
             <div class="view-more">
-                <!-- <a href="#" class="btn btn-outline">查看所有算力节点</a> -->
                 <a href="#" class="btn btn-outline disabled">查看所有算力节点</a>
-                <!-- <a href="#" class="btn btn-outline temp-disabled" onclick="showComingSoon()">查看所有算力节点</a> -->
             </div>
         </div>
     </section>
@@ -280,7 +281,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>我们的智能分配系统持续监控所有节点，如果检测到不稳定情况会自动迁移工作负载。我们维护20%的资源缓冲以应对高峰需求，我们的SLA保证标准方案99.5%的在线率，企业解决方案99.9%的在线率。</p>
+                        <p>nextGPU会对每个接入的算力节点进行工作流任务测试，以确保所有节点都能正常运行任务。对于因突发异常导致任务失败的节点，NextGPU 会将其标记为“未通过”状态，并自动将该节点上的所有任务重新调度执行。因此，NextGPU 能够保证所有工作流任务最终都可以成功运行。</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -289,16 +290,16 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>所有数据传输均使用AES-256加密。每个工作负载在硬件隔离的容器中运行，存储为临时存储，任务完成后立即擦除。对于企业云，我们提供带有机密计算功能的零信任环境。</p>
+                        <p>nextGPU会将算力节点上生成的图片、视频等工作流计算结果，自动推送至用户的 OSS（对象存储服务）存储。同时，系统会自动删除节点上的原始数据。因此，用户数据的存储安全性得到了充分保障。</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
-                        任务激励机制如何运作？
+                        任务分成机制如何运作？
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>当您将应用程序部署到我们的平台并且用户使用它们时，您将获得我们原生代币奖励，用于计算资源消耗。奖励根据您的应用使用的GPU分钟数计算，高峰时段有额外倍率奖励。</p>
+                        <p>nextGPU通过整合分散的闲置 GPU 算力资源，为用户提供工作流任务服务。因此，平台将从用户支付的订阅费用中抽取 ​15%​​ 作为平台使用费，​剩余 85%​​ 归属于实际执行任务的算力节点提供者。</p>
                     </div>
                 </div>
             </div>
@@ -315,8 +316,7 @@
                         <span>nextGPU</span>
                     </div>
                     <p class="footer-desc">
-                        nextGPU是一个去中心化的GPU算力共享平台，连接全球闲置GPU资源，
-                        为AI工作流提供高效、经济的计算能力。
+                        ​nextGPU 是一个利用全球闲置 GPU 资源，为 AI 工作流提供高效、经济算力支持的共享平台。​
                     </p>
                     <div class="social-icons">
                         <a href="https://discord.com" class="discord" target="_blank" title="Discord">
@@ -348,7 +348,7 @@
                     <h3>资源中心</h3>
                     <ul class="footer-links">
                         <li><a href="#">文档</a></li>
-                        <li><a href="#">Deck中心</a></li>
+                        <li><a href="files/nextGPU.pptx">Deck中心</a></li>
                         <li><a href="api.html">API开放平台</a></li>
                         <li><a href="#">常见问题</a></li>
                     </ul>
@@ -356,7 +356,7 @@
             </div>
 
             <div class="copyright">
-                <p>&copy; 2025 nextGPU - 去中心化GPU计算网络。保留所有权利。</p>
+                <p>&copy; 2025 nextGPU - 保留所有权利。</p>
             </div>
         </div>
     </footer>

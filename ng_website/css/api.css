@@ -781,6 +781,61 @@ body {
     color: var(--accent);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+.json-code {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    tab-size: 4;
+    white-space: pre-wrap;
+}
+
+
+
+
+
+.code-number {
+    color: #bd93f9; /* 数字值颜色-紫色 */
+}
+
+/* .code-comment {
+    color: #6272a4; /* 注释颜色-灰色 */
+    font-style: italic;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 响应式调整 */
 @media (max-width: 768px) {
     .model-card {
