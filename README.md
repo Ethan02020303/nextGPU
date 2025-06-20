@@ -3,26 +3,6 @@
 # nextGPU
 **Leveraging Idle GPU Computing Power to Harness AI Workflows.**
 
-[![Website][website-shield]][website-url]
-[![Twitter][twitter-shield]][twitter-url]
-<br>
-[![][github-release-shield]][github-release-link]
-[![][github-release-date-shield]][github-release-link]
-[![][github-downloads-shield]][github-downloads-link]
-[![][github-downloads-latest-shield]][github-downloads-link]
-
-[website-shield]: https://img.shields.io/badge/ComfyOrg-4285F4?style=flat
-[website-url]: http://nextgpu.aihub.cool/
-<!-- Workaround to display total user from https://github.com/badges/shields/issues/4500#issuecomment-2060079995 -->
-[twitter-shield]: https://img.shields.io/twitter/follow/nextGPU
-[twitter-url]: https://x.com/nextGPU
-
-[github-release-shield]: https://img.shields.io/github/v/release/comfyanonymous/ComfyUI?style=flat&sort=semver
-[github-release-link]: https://github.com/comfyanonymous/ComfyUI/releases
-[github-release-date-shield]: https://img.shields.io/github/release-date/comfyanonymous/ComfyUI?style=flat
-[github-downloads-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/total?style=flat
-[github-downloads-latest-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/latest/total?style=flat&label=downloads%40latest
-[github-downloads-link]: https://github.com/comfyanonymous/ComfyUI/releases
 
 ![nextGPU Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/index.png)
 </div>
