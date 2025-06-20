@@ -3,30 +3,63 @@
 # nextGPU
 **Leveraging Idle GPU Computing Power to Harness AI Workflows.**
 
+[![Website][website-shield]][website-url]
+[![Dynamic JSON Badge][discord-shield]][discord-url]
+[![Twitter][twitter-shield]][twitter-url]
+[![Matrix][matrix-shield]][matrix-url]
+<br>
+[![][github-release-shield]][github-release-link]
+[![][github-release-date-shield]][github-release-link]
+[![][github-downloads-shield]][github-downloads-link]
+[![][github-downloads-latest-shield]][github-downloads-link]
+
+[matrix-shield]: https://img.shields.io/badge/Matrix-000000?style=flat&logo=matrix&logoColor=white
+[matrix-url]: https://app.element.io/#/room/%23comfyui_space%3Amatrix.org
+[website-shield]: https://img.shields.io/badge/ComfyOrg-4285F4?style=flat
+[website-url]: https://www.comfy.org/
+<!-- Workaround to display total user from https://github.com/badges/shields/issues/4500#issuecomment-2060079995 -->
+[discord-shield]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Finvites%2Fcomfyorg%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&logo=discord&logoColor=white&label=Discord&color=green&suffix=%20total
+[discord-url]: https://www.comfy.org/discord
+[twitter-shield]: https://img.shields.io/twitter/follow/ComfyUI
+[twitter-url]: https://x.com/ComfyUI
+
+[github-release-shield]: https://img.shields.io/github/v/release/comfyanonymous/ComfyUI?style=flat&sort=semver
+[github-release-link]: https://github.com/comfyanonymous/ComfyUI/releases
+[github-release-date-shield]: https://img.shields.io/github/release-date/comfyanonymous/ComfyUI?style=flat
+[github-downloads-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/total?style=flat
+[github-downloads-latest-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/latest/total?style=flat&label=downloads%40latest
+[github-downloads-link]: https://github.com/comfyanonymous/ComfyUI/releases
+
+![ComfyUI Screenshot](https://github.com/user-attachments/assets/7ccaf2c1-9b72-41ae-9a89-5688c94b7abe)
+</div>
 
 
-# nextGPU
-## nextGPU 是什么？
-nextGPU 是一个基于去中心化算力网络的平台，​专注于为AI工作流提供算力支持。它通过汇聚市场上的闲置GPU算力资源，对这些资源进行互联互通、性能测量等处理，构建成一个能够高效服务于AI工作流的硬件基础设施。当用户提交AI任务请求时，nextGPU 会智能调度任务至最合适的GPU算力节点上执行，并将处理结果返回给用户。
+## What is nextGPU?​
+nextGPU is a decentralized computing power network platform dedicated to providing computational support for AI workflows. It aggregates idle GPU resources from the market, processes them through interconnection, interoperability, and performance measurement, and constructs an efficient hardware infrastructure for AI workflows. When users submit AI task requests, nextGPU intelligently dispatches tasks to the most suitable GPU computing nodes for execution and returns processed results to users.
 
-## 我是算力提供者，如何在 nextGPU 上赚钱？
-nextGPU 的核心是利用去中心化的闲置算力提供服务。因此，当用户支付算力使用费后，平台仅收取15%的服务费，​剩余85%的费用将直接支付给算力提供者。作为提供者，您可以随时（定期或灵活）从平台提取您的收益。
+## How do I earn money on nextGPU as a computing power provider?​
+nextGPU’s core service leverages decentralized idle computing resources. Therefore, when users pay computing power fees, the platform retains only a 15% service fee and makes the remaining 85% payment directly to providers. As a provider, you can withdraw your earnings at any time (periodically or flexibly) from the platform.
 
-## 使用 nextGPU 有什么优势？
+## What are the advantages of using nextGPU?
+nextGPU’s core advantage is its ​highly competitive pricing. By leveraging idle computing resources, its operational costs are ​significantly lower than competitors.
+Example: Generating a 1024x1024 image with 20 steps costs ​CN¥0.1​ on alternative platforms, whereas nextGPU charges only ​CN¥0.0023​ – approximately ​1/43 (or 2.3%)​​ of the standard cost.
 
-nextGPU 的核心优势在于极具竞争力的价格。因为它利用的是闲置算力资源，其使用成本远低于同类竞品。
-​例如：​​ 生成一张 1024x1024 分辨率、20 步的图片，在某平台上需花费 0.1 元。而使用 nextGPU，​仅需 0.0023 元，成本仅为前者的约 1/43 (或 2.3%)​。
+## How does nextGPU ensure complete output for AI tasks?
+nextGPU differs from conventional decentralized platforms through:
 
-## nextGPU 如何保障 AI 任务输出完整结果？
-nextGPU 在保障任务完整性方面与其它去中心化平台不同：
+1. Rigorous Node Screening：
+Each computing node ​undergoes real-task benchmarking​ using actual AI workloads. Nodes failing benchmark tests are ​flagged as "disqualified"​​ and excluded from task scheduling.
 
-​### 严格节点筛选：​​ 平台会对每个算力节点进行基于真实AI任务的测量。无法通过测量任务的节点将被标记为“未通过”​，AI任务不会调度到这类节点上。
-​### 智能任务监控与重试：​​ 在执行过程中，nextGPU 会实时监控每个AI任务的运行时间。一旦发现任务未能在预期时间内完成​（通常由节点问题导致），平台会立即将该任务重新调度给其他合格节点执行，并将原节点标记为失效状态。
+2. Intelligent Task Monitoring & Retry：
+Real-time execution monitoring tracks each AI task. If a task exceeds its expected completion window (typically indicating node instability), the system:
+* ​Immediately redirects​ the task to qualified backup nodes
+* ​Temporarily disables​ the underperforming node
 
-## nextGPU 如何保障工作流任务的高效执行？
-nextGPU 的高效秘诀在于其智能的任务处理能力​：
+## How does nextGPU guarantee efficient workflow execution?
+The platform maximizes efficiency via ​intelligent task orchestration:
 
-1. 区别于仅简单分发任务的平台，nextGPU 会分析每个AI工作流任务的结构。
-2. 平台能自动将可并行化的任务拆分成子任务。
-3. 然后将这些子任务智能调度并分发给多个合适的闲置算力节点并行处理。
-这种方式显著提升了AI任务的执行速度，同时最大化地利用了闲置的GPU算力资源。
+1. Workflow Decomposition:​​ Analyzes AI workflow structures beyond simple task distribution
+2. ​Parallelization Engine:​​ Automatically splits tasks into parallelizable subtasks
+3. Dynamic Dispatching:​​ Intelligently distributes subtasks across optimal idle nodes
+
+This approach delivers ​**≥3.9× acceleration**​ for AI tasks while optimizing idle GPU utilization.
