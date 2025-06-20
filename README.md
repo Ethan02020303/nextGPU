@@ -1,4 +1,11 @@
-#nextGPU
+<div align="center">
+
+# nextGPU
+**Leveraging Idle GPU Computing Power to Harness AI Workflows.**
+
+
+
+# nextGPU
 ## nextGPU 是什么？
 nextGPU 是一个基于去中心化算力网络的平台，​专注于为AI工作流提供算力支持。它通过汇聚市场上的闲置GPU算力资源，对这些资源进行互联互通、性能测量等处理，构建成一个能够高效服务于AI工作流的硬件基础设施。当用户提交AI任务请求时，nextGPU 会智能调度任务至最合适的GPU算力节点上执行，并将处理结果返回给用户。
 
