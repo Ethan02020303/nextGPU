@@ -30,7 +30,7 @@
 [github-downloads-latest-shield]: https://img.shields.io/github/downloads/comfyanonymous/ComfyUI/latest/total?style=flat&label=downloads%40latest
 [github-downloads-link]: https://github.com/comfyanonymous/ComfyUI/releases
 
-![nextGPU Screenshot](images/index.png)
+![nextGPU Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/index.png)
 </div>
 
 
