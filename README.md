@@ -37,6 +37,36 @@
 ## What is nextGPU?​
 nextGPU is a decentralized computing power network platform dedicated to providing computational support for AI workflows. It aggregates idle GPU resources from the market, processes them through interconnection, interoperability, and performance measurement, and constructs an efficient hardware infrastructure for AI workflows. When users submit AI task requests, nextGPU intelligently dispatches tasks to the most suitable GPU computing nodes for execution and returns processed results to users.
 
+
+
+## Get Started
+
+#### [nextGPU Website](http://nextgpu.aihub.cool/)
+- Computing power installation package [come soon]
+- Available on Windows & linux.
+
+## idea generation
+#### [nextGPU workflow market](http://nextgpu.aihub.cool/market.html)
+
+
+![workflow market Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/market.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## How do I earn money on nextGPU as a computing power provider?​
 nextGPU’s core service leverages decentralized idle computing resources. Therefore, when users pay computing power fees, the platform retains only a 15% service fee and makes the remaining 85% payment directly to providers. As a provider, you can withdraw your earnings at any time (periodically or flexibly) from the platform.
 
