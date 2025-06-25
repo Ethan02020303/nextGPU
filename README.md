@@ -10,7 +10,7 @@
 
 ## What is nextGPU?​
 nextGPU is a decentralized computing power network platform dedicated to providing computational support for AI workflows. It aggregates idle GPU resources from the market, processes them through interconnection, interoperability, and performance measurement, and constructs an efficient hardware infrastructure for AI workflows. When users submit AI task requests, nextGPU intelligently dispatches tasks to the most suitable GPU computing nodes for execution and returns processed results to users.
-
+![workflow market Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/background.png)
 
 
 ## Get Started
@@ -27,7 +27,8 @@ nextGPU is a decentralized computing power network platform dedicated to providi
 
 
 
-
+## workflow docker
+#### [flux docker](http://nextgpu.aihub.cool/market.html)
 
 
 
