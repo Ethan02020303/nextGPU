@@ -2,6 +2,7 @@ package process
 
 import (
 	"bytes"
+	"crypto/sha1"
 	"encoding/csv"
 	"errors"
 	"fmt"
@@ -274,15 +275,18 @@ func linuxBoardUUID() (error, string) {
 		log4plus.Info(fmt.Sprintf("%s exec.LookPath failed err=[%s]", funName, err.Error()))
 		powershellPath = "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 	}
-	log4plus.Info(fmt.Sprintf("%s exec.LookPath powershellPath=[%s]", funName, powershellPath))
-	//cmd := exec.Command("powershell.exe", "-Command", "Get-CimInstance Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID")
+	//log4plus.Info(fmt.Sprintf("%s exec.LookPath powershellPath=[%s]", funName, powershellPath))
 	cmd := exec.Command(powershellPath, "-Command", "Get-CimInstance Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID")
+	//cmd := exec.Command(powershellPath, "-Command", "Start-Process powershell -ArgumentList 'Get-CimInstance Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID' -Verb RunAs")
+	//cmd := exec.Command(powershellPath,
+	//	"-Command",
+	//	"Get-WmiObject Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID")
 	out, err := cmd.Output()
 	if err != nil {
-		log4plus.Info(fmt.Sprintf("%s cmd.Output failed err=[%s]", funName, err.Error()))
+		//log4plus.Info(fmt.Sprintf("%s cmd.Output failed err=[%s]", funName, err.Error()))
 		runError = true
 	}
-	log4plus.Info(fmt.Sprintf("%s runError=[%t]", funName, runError))
+	//log4plus.Info(fmt.Sprintf("%s runError=[%t]", funName, runError))
 	if !runError {
 		uuid := strings.TrimSpace(string(out))
 		log4plus.Info(fmt.Sprintf("%s strings.TrimSpace uuid=[%s]", funName, uuid))
@@ -332,8 +336,8 @@ func linuxBoardUUID() (error, string) {
 		cmd = exec.Command(dmidecodePath, "-s", "system-uuid")
 		out, err = cmd.CombinedOutput()
 		if err != nil {
-			errString := fmt.Sprintf("%s Output Failed err=[%s]", funName, err.Error())
-			log4plus.Error(errString)
+			//errString := fmt.Sprintf("%s Output Failed err=[%s]", funName, err.Error())
+			//log4plus.Error(errString)
 			runError = true
 			return err, ""
 		}
@@ -351,7 +355,9 @@ func linuxBoardUUID() (error, string) {
 // Windows
 func powershellBoardUUID() (error, string) {
 	funName := "powershellBoardUUID"
-	cmd := exec.Command("powershell", "-Command",
+	log4plus.Info("%s ---->>>>", funName)
+	cmd := exec.Command("powershell",
+		"-Command",
 		"Get-CimInstance Win32_ComputerSystemProduct | select Name,Vendor,Version,IdentifyingNumber,UUID | fl")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -407,7 +413,7 @@ func BoardInfo() (error, string) {
 	funName := "BoardInfo"
 	switch runtime.GOOS {
 	case "linux":
-		log4plus.Info(fmt.Sprintf("%s linuxBoardUUID--->>>", funName))
+		//log4plus.Info(fmt.Sprintf("%s linuxBoardUUID--->>>", funName))
 		return linuxBoardUUID()
 	case "windows":
 		log4plus.Info(fmt.Sprintf("%s windowsBoardUUID--->>>", funName))
@@ -415,6 +421,30 @@ func BoardInfo() (error, string) {
 	default:
 		return fmt.Errorf("unsupported platform"), ""
 	}
+}
+
+func StringToUUIDv5(input string) string {
+	// 计算 SHA-1 哈希
+	hash := sha1.Sum([]byte(input))
+	// 取前16字节（SHA-1是20字节，UUID只需要16字节）
+	var uuidBytes [16]byte
+	copy(uuidBytes[:], hash[:16])
+	// 设置版本位 (版本5)
+	uuidBytes[6] = (uuidBytes[6] & 0x0F) | 0x50
+	// 设置变体位 (RFC 4122)
+	uuidBytes[8] = (uuidBytes[8] & 0x3F) | 0x80
+	// 格式化为 UUID
+	return formatUUID(uuidBytes[:])
+}
+
+// 将字节数组格式化为标准 UUID 字符串
+func formatUUID(data []byte) string {
+	return fmt.Sprintf("%x-%x-%x-%x-%x",
+		data[0:4],
+		data[4:6],
+		data[6:8],
+		data[8:10],
+		data[10:16])
 }
 
 func GenerateEnvironmentID() string {
@@ -448,7 +478,7 @@ func GenerateEnvironmentID() string {
 	}
 	mainBoardUUID := ""
 	if err, mainBoardUUID = BoardInfo(); err != nil {
-		mainBoardUUID = ""
+		mainBoardUUID = StringToUUIDv5(gpu)
 	}
 	log4plus.Info(fmt.Sprintf("%s osInfo=[%s] cpu=[%s] memory=[%d] gpu=[%s] gpuDriver=[%s]\nUUID=[%s]", funName, osInfo, cpuString, memory, gpu, gpuDriver, mainBoardUUID))
 	return mainBoardUUID

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/beevik/ntp"
@@ -9,8 +10,12 @@ import (
 	"github.com/nextGPU/ng-client/configure"
 	"github.com/nextGPU/ng-client/process"
 	"gopkg.in/yaml.v3"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -170,6 +175,216 @@ func parseYaml(filePath string) {
 	fmt.Println("镜像名称:", service.Image)
 	fmt.Println("端口映射:", service.Ports)
 	fmt.Println("GPU 数量:", service.Deploy.Resources.Reservations.Devices[0].Count)
+}
+
+// 获取主板UUID
+func GetBoardUUID() (string, error) {
+	// 首先尝试直接读取Linux系统文件（最可靠的方式）
+	if uuid, err := getLinuxSysUUID(); err == nil {
+		return uuid, nil
+	}
+
+	// 检查是否在WSL环境中
+	if isWSL() {
+		// 尝试使用Windows方法获取UUID
+		if uuid, err := getWindowsUUID(); err == nil {
+			return uuid, nil
+		}
+	}
+
+	// 最后尝试使用dmidecode
+	return getDMIDecodeUUID()
+}
+
+// 判断是否在WSL环境中
+func isWSL() bool {
+	// 检查WSL特定文件
+	if _, err := os.Stat("/proc/sys/fs/binfmt_misc/WSLInterop"); !os.IsNotExist(err) {
+		return true
+	}
+
+	// 检查内核版本是否包含Microsoft
+	if content, err := ioutil.ReadFile("/proc/version"); err == nil {
+		return strings.Contains(strings.ToLower(string(content)), "microsoft")
+	}
+
+	return false
+}
+
+// Linux系统文件方式获取UUID（首选）
+func getLinuxSysUUID() (string, error) {
+	// 尝试读取系统文件
+	sysPaths := []string{
+		"/sys/class/dmi/id/product_uuid",
+		"/sys/devices/virtual/dmi/id/product_uuid",
+		"/sys/firmware/dmi/tables/smbios_entry_point",
+	}
+
+	for _, path := range sysPaths {
+		if data, err := ioutil.ReadFile(path); err == nil {
+			uuid := normalizeUUID(string(data))
+			if isValidUUID(uuid) {
+				return uuid, nil
+			}
+		}
+	}
+	return "", errors.New("无法从系统文件读取UUID")
+}
+
+// dmidecode方式获取UUID
+func getDMIDecodeUUID() (string, error) {
+	// 尝试执行dmidecode命令，获取更详细输出
+	cmd := exec.Command("sudo", "dmidecode", "-t", "system")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("dmidecode执行失败: %v", err)
+	}
+
+	// 从详细输出中提取UUID
+	uuid := extractUUIDFromOutput(string(out))
+	if isValidUUID(uuid) {
+		return uuid, nil
+	}
+
+	return "", errors.New("从dmidecode输出中无法解析有效的UUID")
+}
+
+// 从dmidecode输出中提取UUID
+func extractUUIDFromOutput(output string) string {
+	lines := strings.Split(strings.ReplaceAll(output, "\r", ""), "\n")
+	var uuid string
+
+	for i, line := range lines {
+		line = strings.TrimSpace(line)
+
+		// 检查UUID行
+		if strings.Contains(line, "UUID:") || strings.Contains(line, "UUID (Universally Unique ID):") {
+			// 直接在同一行中查找UUID
+			uuid = strings.TrimSpace(line[strings.Index(line, ":")+1:])
+			if isValidUUID(uuid) {
+				return uuid
+			}
+
+			// 或者在下一行查找UUID
+			if i+1 < len(lines) {
+				nextLine := strings.TrimSpace(lines[i+1])
+				if isValidUUID(nextLine) {
+					return nextLine
+				}
+			}
+		}
+	}
+
+	// 搜索整个输出中的UUID模式
+	uuidRegex := regexp.MustCompile(`(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`)
+	if matches := uuidRegex.FindStringSubmatch(output); matches != nil {
+		return matches[0]
+	}
+
+	return ""
+}
+
+// Windows方式获取UUID（在WSL中使用）
+func getWindowsUUID() (string, error) {
+	// 尝试使用wmic命令获取UUID
+	if uuid, err := getWindowsUUIDViaWMIC(); err == nil {
+		return uuid, nil
+	}
+
+	// 尝试使用注册表获取MachineGuid
+	if uuid, err := getWindowsUUIDViaRegistry(); err == nil {
+		return uuid, nil
+	}
+
+	// 尝试使用systeminfo命令
+	if uuid, err := getWindowsUUIDViaSystemInfo(); err == nil {
+		return uuid, nil
+	}
+
+	return "", errors.New("无法通过Windows方法获取UUID")
+}
+
+// 使用wmic命令获取UUID
+func getWindowsUUIDViaWMIC() (string, error) {
+	// 使用完整路径确保WSL中可以正常工作
+	cmd := exec.Command("cmd.exe", "/c", "C:\\Windows\\System32\\wbem\\WMIC.exe csproduct get uuid")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("wmic执行失败: %v", err)
+	}
+
+	return extractUUIDFromOutput(string(out)), nil
+}
+
+// 使用注册表获取MachineGuid
+func getWindowsUUIDViaRegistry() (string, error) {
+	cmd := exec.Command("cmd.exe", "/c", "reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography /v MachineGuid")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("reg查询失败: %v", err)
+	}
+
+	// 从输出中提取GUID
+	return extractUUIDFromOutput(string(out)), nil
+}
+
+// 使用systeminfo命令获取系统信息
+func getWindowsUUIDViaSystemInfo() (string, error) {
+	cmd := exec.Command("cmd.exe", "/c", "systeminfo")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("systeminfo执行失败: %v", err)
+	}
+
+	systemInfo := string(out)
+	if idx := strings.Index(systemInfo, "System UUID:"); idx != -1 {
+		// 尝试提取UUID字段
+		line := systemInfo[idx:]
+		if newline := strings.Index(line, "\n"); newline != -1 {
+			line = line[:newline]
+		}
+
+		if uuid := extractUUIDFromOutput(line); uuid != "" {
+			return uuid, nil
+		}
+	}
+
+	return "", errors.New("从systeminfo输出中无法解析UUID")
+}
+
+// 验证UUID格式
+func isValidUUID(uuid string) bool {
+	// 移除多余空格和非打印字符
+	uuid = strings.TrimSpace(uuid)
+
+	// 检查长度
+	if len(uuid) < 32 || len(uuid) > 36 {
+		return false
+	}
+
+	// 正则表达式验证UUID格式
+	pattern := `(?i)^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$`
+	matched, err := regexp.MatchString(pattern, uuid)
+	return err == nil && matched
+}
+
+// 规范化UUID格式
+func normalizeUUID(uuid string) string {
+	// 移除空格和非打印字符
+	uuid = strings.TrimSpace(uuid)
+	uuid = strings.ToLower(uuid)
+
+	// 移除换行符
+	uuid = strings.ReplaceAll(uuid, "\r", "")
+	uuid = strings.ReplaceAll(uuid, "\n", "")
+
+	// 如果UUID不带横线，添加标准格式分隔符
+	if len(uuid) == 32 {
+		return fmt.Sprintf("%s-%s-%s-%s-%s",
+			uuid[:8], uuid[8:12], uuid[12:16], uuid[16:20], uuid[20:32])
+	}
+
+	return uuid
 }
 
 func main() {

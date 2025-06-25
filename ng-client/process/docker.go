@@ -889,20 +889,57 @@ func findContainerByImage(imageName string) (string, error) {
 	return name, nil
 }
 
+func execDockerCompose(yamlFile string, index int64) (bool, *exec.Cmd) {
+	funName := "execDockerCompose"
+	cmdString := fmt.Sprintf("docker-compose -f %s up -d", yamlFile) //docker compose V1
+	log4plus.Info(fmt.Sprintf("%s startup index=[%d] cmd=[%s]", funName, index, cmdString))
+	argsV1 := strings.Fields(cmdString)
+	cmdV1 := exec.Command(argsV1[0], argsV1[1:]...)
+	cmdV1.Stdout = os.Stdout
+	cmdV1.Stderr = os.Stderr
+	if err := cmdV1.Start(); err == nil {
+		return true, cmdV1
+	}
+	cmdString = fmt.Sprintf("docker-compose -f %s up -d", yamlFile)
+	log4plus.Info(fmt.Sprintf("%s exec docker-compose failed index=[%d] cmd=[%s]", funName, index, cmdString))
+
+	cmdString = fmt.Sprintf("docker compose -f %s up -d", yamlFile) //docker compose V1
+	log4plus.Info(fmt.Sprintf("%s startup index=[%d] cmd=[%s]", funName, index, cmdString))
+	argsV2 := strings.Fields(cmdString)
+	cmdV2 := exec.Command(argsV2[0], argsV2[1:]...)
+	cmdV2.Stdout = os.Stdout
+	cmdV2.Stderr = os.Stderr
+	if err := cmdV2.Start(); err == nil {
+		return true, cmdV2
+	}
+	cmdString = fmt.Sprintf("docker compose -f %s up -d", yamlFile)
+	log4plus.Info(fmt.Sprintf("%s exec docker compose failed index=[%d] cmd=[%s]", funName, index, cmdString))
+	return false, nil
+}
+
 func (n *NodeDocker) startupDockerhub(compose DockerCompose, yamlFile string, index int64) bool {
 	funName := "startupDockerhub"
-	cmdString := fmt.Sprintf("docker-compose -f %s up -d", yamlFile)
-	log4plus.Info(fmt.Sprintf("%s startup index=[%d] cmd=[%s]", funName, index, cmdString))
-	args := strings.Fields(cmdString)
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Start(); err != nil {
-		errString := fmt.Sprintf("%s cmd.Start() Failed err=[%s]", funName, err.Error())
+
+	success, cmd := execDockerCompose(yamlFile, index)
+	if !success {
+		errString := fmt.Sprintf("%s cmd.Start() Failed ", funName)
 		log4plus.Error(errString)
 		sendStartupFail(n.Base.WorkSpaceID, errString)
 		return false
 	}
+
+	//cmdString := fmt.Sprintf("docker-compose -f %s up -d", yamlFile)
+	//log4plus.Info(fmt.Sprintf("%s startup index=[%d] cmd=[%s]", funName, index, cmdString))
+	//args := strings.Fields(cmdString)
+	//cmd := exec.Command(args[0], args[1:]...)
+	//cmd.Stdout = os.Stdout
+	//cmd.Stderr = os.Stderr
+	//if err := cmd.Start(); err != nil {
+	//	errString := fmt.Sprintf("%s cmd.Start() Failed err=[%s]", funName, err.Error())
+	//	log4plus.Error(errString)
+	//	sendStartupFail(n.Base.WorkSpaceID, errString)
+	//	return false
+	//}
 	sendStartupWorkSpace(n.WorkSpaceID)
 	containerName := ""
 	for _, v := range compose.Services {

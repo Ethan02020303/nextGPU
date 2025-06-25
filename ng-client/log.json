@@ -1,7 +1,7 @@
 {
     "LogLevel" : "debug",
     "FileWriter" : {
-        "LogPath" : "log/ng_client-%Y%M%D.log",
+        "LogPath" : "log/cc_client-%Y%M%D.log",
         "On": true
     },
     "ConsoleWriter" : {

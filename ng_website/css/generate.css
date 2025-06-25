@@ -62,9 +62,13 @@ body {
     order: 1; /* 默认值 */
 }
 
+.input-box {
+            position: relative;
+        }
+
 .input-box textarea {
     width: 100%;
-    height: 200px;
+    height: 150px;
     padding: 12px;
     border: 1px solid #3a3a50;
     border-radius: 8px;
@@ -87,6 +91,161 @@ body {
     color: #8c8ca1;
     line-height: 1.6;
 }
+
+
+
+/* 新上传按钮样式 - 圆角矩形 */
+        .upload-container {
+            position: absolute;
+            bottom: 5px; /* 调整垂直位置 */
+            left: 15px;  /* 放在左下角 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 10;
+        }
+
+        .upload-btn {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #fdbb2d, #ff8c00);
+            color: white;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 10px;
+            font-weight: 500;
+            gap: 8px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #ffc246, #ff9f1a);
+        }
+
+        .upload-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-btn i {
+            font-size: 10px;
+        }
+
+        .upload-hint {
+            display: none !important;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            text-align: right;
+            max-width: 130px;
+        }
+
+/* 参考图预览容器 */
+        .preview-container {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%; /* 占满整个上传容器 */
+            height: 100%; /* 占满整个上传容器 */
+            border-radius: 16px; /* 与上传按钮一致 */
+            overflow: hidden;
+            cursor: pointer;
+            z-index: 20;
+            display: none;
+        }
+
+        /* 隐藏整个上传容器 */
+        .upload-container.hidden {
+            display: none;
+        }
+
+        .preview-container img.preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px; /* 与上传按钮一致 */
+        }
+
+        .preview-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 0 0 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+
+/* 文件输入隐藏 */
+        #imageUpload {
+            display: none;
+        }
+
+
+        /* 缩略图图标样式 */
+        .thumbnail-icon {
+            position: absolute;
+            left: 15px;
+            bottom: 10px; /* 调整位置避免覆盖滚动条 */
+            display: none;
+            z-index: 10;
+            width: 24px;
+            height: 24px;
+            color: #fff;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .thumbnail-icon i {
+            font-size: 16px;
+        }
+
+        .thumbnail-icon:hover {
+            color: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .textarea-container {
+            position: relative;
+            height: 150px; /* 与textarea高度匹配 */
+        }
+
+        /* 修复文字计数容器 */
+        .text-count-container {
+            display: flex;
+            justify-content: flex-end; /* 右对齐 */
+            margin-top: -20px; /* 轻微上移，使其在视觉上靠近textarea */
+            margin-bottom: 10px; /* 与上传按钮保持间距 */
+        }
+
+        .text-count {
+            color: #aaa;
+            font-size: 12px;
+            padding-right: 10px; /* 与textarea右侧对齐 */
+        }
+
+
 
 .logo {
     font-size: 24px;

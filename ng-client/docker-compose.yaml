@@ -1,0 +1,22 @@
+version: "1"
+
+services:
+  comfyui:
+    #    build: .
+    image: nextgpu/comfyui-nextgpu:1.0.0
+    container_name: comfyUI-nextgpu
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
+    ports:
+      - 7860:7860
+
+    volumes:
+      - ${PWD}/output:/home/user/app/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

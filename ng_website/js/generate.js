@@ -362,6 +362,72 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    //描述词输入
+    const promptTextarea = document.getElementById('prompt');
+    const charCount = document.getElementById('charCount');
+    const uploadButton = document.getElementById('uploadButton');
+    const imageUpload = document.getElementById('imageUpload');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const previewClose = document.getElementById('previewClose');
+    const thumbnailIcon = document.getElementById('thumbnailIcon');
+    // 字数统计
+    promptTextarea.addEventListener('input', function() {
+        const length = this.value.length;
+        charCount.textContent = length;
+        if (length > 80) {
+            charCount.style.color = '#e74c3c';
+        } else if (length > 100) {
+            charCount.style.color = '#f39c12';
+        } else if (length > 110) {
+            this.value = this.value.substring(0, 110);
+            charCount.textContent = 110;
+            charCount.style.color = '#ff0000'; // 使用更醒目的红色
+        } else {
+            charCount.style.color = '';
+        }
+    });
+    // 打开文件选择对话框
+    uploadButton.addEventListener('click', function() {
+        imageUpload.click();
+    });
+    // 处理文件选择
+    imageUpload.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // 验证文件大小（最大5MB）
+            if (file.size > 5 * 1024 * 1024) {
+                alert('文件太大，请选择小于5MB的图片');
+                return;
+            }
+            
+            // 隐藏上传按钮，显示图片图标
+            uploadButton.style.display = 'none';
+            thumbnailIcon.style.display = 'flex';
+            document.getElementById('uploadHint').style.display = 'none';
+        }
+    });
+
+    // 点击图标清除已选图片
+    thumbnailIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // 清除文件选择
+        imageUpload.value = '';
+        
+        // 显示上传按钮，隐藏图标
+        uploadButton.style.display = 'flex';
+        thumbnailIcon.style.display = 'none';
+        document.getElementById('uploadHint').style.display = 'block';
+        
+        // 如果有预览图，也清除它
+        if (previewContainer) {
+            previewContainer.style.display = 'none';
+            previewImage.src = '';
+        }
+    });
+
     // 图片数量选择器
     const decreaseBtn = document.getElementById('decrease-btn');
     const increaseBtn = document.getElementById('increase-btn');
