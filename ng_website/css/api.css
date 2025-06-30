@@ -539,65 +539,109 @@ body {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-.faq-content {
-    padding: 10px 0;
-}
 
-.faq-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
-}
 
-.faq-question {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
 
-.faq-question span {
-    flex-grow: 1;
-    padding-left: 10px;
-}
 
-.faq-question i {
-    color: var(--gray);
-    transition: transform 0.3s;
-}
 
-.faq-item.active .faq-question i {
-    transform: rotate(180deg);
-    color: var(--primary);
-}
 
-.faq-answer {
-    padding: 15px 0 0 30px;
-    color: #555;
-    line-height: 1.6;
-    display: none;
-}
+/* 修复后的FAQ部分 */
+        .faq-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            padding: 30px;
+            margin-top: 20px;
+            flex: 1;
+        }
+        
+        .faq-header {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #4e75ff;
+            border-bottom: 2px solid #4e75ff;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .faq-container {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .faq-item {
+            background: #fafafa;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #eaecef;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 1; /* 确保悬停时不会超出容器 */
+        }
+        
+        /* 修复问题：移除位置变换 */
+        .faq-item:hover {
+            /* 原效果： transform: translateY(-10px); */
+            /* 新效果：只加深阴影和添加颜色强调 */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #4e75ff;
+        }
+        
+        .faq-question {
+            padding: 18px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1a1f36;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+        }
+        
+        .faq-question i {
+            margin-right: 10px;
+            color: #4e75ff;
+        }
+        
+        .faq-answer {
+            padding: 0 20px 20px 20px;
+            color: #555;
+            border-top: 1px solid #eee;
+            margin-top: 0;
+            display: none;
+        }
+        
+        .faq-expand-icon {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.expanded .faq-expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item.expanded .faq-answer {
+            display: block;
+        }
+        
+        .footer-section {
+            margin-top: 60px;
+        }
 
-.faq-item.active .faq-answer {
-    display: block;
-}
 
-.faq-more {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-    font-size: 0.9rem;
-    text-align: center;
-}
 
-.faq-more a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-}
 
-.faq-more a:hover {
-    text-decoration: underline;
-}
+
+
+
+
+
+
+
+
+
 
 .footer-title {
     font-size: 14px;
@@ -782,17 +826,6 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 .json-code {
     background: #2d2d2d;
     color: #f8f8f2;
@@ -805,36 +838,48 @@ body {
     white-space: pre-wrap;
 }
 
-
-
-
-
 .code-number {
     color: #bd93f9; /* 数字值颜色-紫色 */
 }
 
-/* .code-comment {
-    color: #6272a4; /* 注释颜色-灰色 */
-    font-style: italic;
-} */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 240px;
+    }
+    
+    .search-bar {
+        width: 400px;
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@media (max-width: 992px) {
+    .sidebar {
+        width: 70px;
+        overflow: visible;
+    }
+    
+    .sidebar-header, .user-info, .user-details, .stat-name, 
+    .menu-group-title, .menu-item span, .sidebar-footer {
+        display: none;
+    }
+    
+    .menu-item {
+        padding: 15px;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .menu-item i {
+        margin: 0;
+        font-size: 20px;
+    }
+    
+    .avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
 
 /* 响应式调整 */
 @media (max-width: 768px) {
@@ -907,48 +952,7 @@ body {
         font-size: 12px;
         padding: 10px;
     }
-}
 
-@media (max-width: 1200px) {
-    .sidebar {
-        width: 240px;
-    }
-    
-    .search-bar {
-        width: 400px;
-    }
-}
-
-@media (max-width: 992px) {
-    .sidebar {
-        width: 70px;
-        overflow: visible;
-    }
-    
-    .sidebar-header, .user-info, .user-details, .stat-name, 
-    .menu-group-title, .menu-item span, .sidebar-footer {
-        display: none;
-    }
-    
-    .menu-item {
-        padding: 15px;
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-    
-    .menu-item i {
-        margin: 0;
-        font-size: 20px;
-    }
-    
-    .avatar {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-}
-
-@media (max-width: 768px) {
     body {
         flex-direction: column;
     }
@@ -1032,4 +1036,21 @@ body {
 .toast.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* 禁用按钮的样式 */
+.btn:disabled,
+.btn[disabled] {
+    background-color: #cccccc !important; /* 灰色背景 */
+    color: #666666 !important; /* 灰色文字 */
+    cursor: not-allowed !important; /* 禁用鼠标指针 */
+    opacity: 0.7 !important; /* 半透明效果 */
+    box-shadow: none !important; /* 移除阴影 */
+}
+
+/* 移除禁用按钮的悬停效果 */
+.btn:disabled:hover,
+.btn[disabled]:hover {
+    background-color: #cccccc !important;
+    transform: none !important;
 }

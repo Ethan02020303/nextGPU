@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         sendUserInfo()
     }
 
-
     // 常见问题折叠功能
     const faqQuestions = document.querySelectorAll('.faq-question');
     faqQuestions.forEach(question => {
@@ -32,7 +31,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
 
+// 交互效果：卡片悬停动画
+document.querySelectorAll('.plan-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px)';
+        this.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.15)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+    });
+});
 
+// 禁用按钮状态处理
+document.querySelector('.btn-disabled').addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('此会员级别为免费体验版，无需购买');
+});
 
+// 为其他按钮添加购买提示
+document.querySelectorAll('.btn:not(.btn-disabled)').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const planCard = this.closest('.plan-card');
+        const planId = planCard.dataset.planId;
+        sendSubscription(planId);
+    });
 });

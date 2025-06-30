@@ -491,8 +491,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             //描述词
             const promptTextarea = document.querySelector('.creative-content .input-box textarea');
             let promptParam = promptTextarea ? promptTextarea.value : '';
+            if (promptParam === '') {
+                promptParam = "a photo of a panda holding a fork\n\ncinematic, dramatic lighting, high resolution, detailed, 4k";
+            }
             //工作流title
-            const res = await sendNewTask(workflowTitle, imageCount, "2025/05", taskID, selectedRatio, promptParam)
+            const res = await sendNewTask(userName, workflowTitle, imageCount, "2025/05", taskID, selectedRatio, promptParam)
             const subs = res.subs;
             //启动websocket监听每一个子任务的进度
             connect(res.connect)

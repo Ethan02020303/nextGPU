@@ -7,7 +7,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/api.css">
+    <link rel="stylesheet" href="css/subscription.css">
 </head>
 <body>
     <!-- 左侧导航栏 -->
@@ -124,93 +124,215 @@
             <div class="section-header">
                 <h2 class="section-title">订阅中心</h2>
             </div>
-
-
-            <!-- 修改为垂直排列的API卡片区域 -->
-            <div class="api-cards-container">
-                <!-- 订阅计划卡片 -->
-                <div class="api-card">
-                    <div class="card-header">
-                        <h3>订阅计划</h3>
+            
+            <!--  -->
+            <div class="plans-container">
+                <!-- 基础档 -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>基础会员</h3>
+                        <div class="plan-price">免费</div>
+                        <div class="plan-price-info">每月3,000积分 ≈300张图</div>
+                        <div class="plan-storage">5GB 存储空间</div>
                     </div>
-                    <div class="card-content">
-                        <div class="sub-plans-container">
-                            <div class="sub-plan">
-                                <h4>API基础计划</h4>
-                                <div class="price">￥6起</div>
-                                <p><small>100积分=1元</small></p>
-                                <ul>
-                                    <li>QPS - 1</li>
-                                    <li>并发 - 2</li>
-                                    <li>积分永久有效</li>
-                                    <li>积分充值无折扣</li>
-                                    <li>不可用于商业目的</li>
-                                </ul>
-                                <button class="btn">立即购买</button>
+                    
+                    <div class="plan-features">
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
                             </div>
-                            <div class="sub-plan popular">
-                                <div class="popular-tag">节省10%!</div>
-                                <h4>API标准计划</h4>
-                                <div class="price">￥2000<small>原价￥2200</small></div>
-                                <p><small>22万积分 100积分=0.9元</small></p>
-                                <ul>
-                                    <li>QPS - 1</li>
-                                    <li>并发 - 5</li>
-                                    <li>积分永久有效</li>
-                                    <li>10%积分充值折扣</li>
-                                    <li>可出售生成图片或用于商业目的</li>
-                                    <li>支持开发票</li>
-                                </ul>
-                                <button class="btn">立即购买</button>
-                            </div>
-                            <div class="sub-plan">
-                                <h4>更高额定制</h4>
-                                <p>定制积分额度</p>
-                                <p>定制QPS和并发数</p>
-                                <ul>
-                                    <li>积分永久有效</li>
-                                    <li>定制积分充值折扣</li>
-                                    <li>可出售生成图片或用于商业目的</li>
-                                    <li>支持开发票</li>
-                                </ul>
-                                <button class="btn">联系商务</button>
-                            </div>
+                            <div class="feature-text">单批次 <span class="highlight-feature">5张</span> 图片</div>
                         </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">无限并发批次</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">只允许 <span class="highlight-feature">单设备</span> 登录</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon cross">
+                                <i class="fas fa-times" style="background: #e74c3c;"></i>
+                            </div>
+                            <div class="feature-text">无商业授权</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon cross">
+                                <i class="fas fa-times" style="background: #e74c3c;"></i>
+                            </div>
+                            <div class="feature-text">无水印下载</div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-button">
+                        <button class="btn btn-disabled">免费体验</button>
                     </div>
                 </div>
                 
-                <!-- 常见问题卡片 -->
-                <div class="api-card">
-                    <div class="card-header">
-                        <h3>常见问题</h3>
+                <!-- 初级档 -->
+                <div class="plan-card" data-plan-id="primary">
+                    <div class="plan-header">
+                        <h3>初级会员</h3>
+                        <div class="plan-price">¥29</div>
+                        <div class="plan-price-info">每月30,000积分 ≈3,000张图</div>
+                        <div class="plan-storage">20GB 存储空间</div>
                     </div>
-                    <div class="card-content faq-content">
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span>1、是否支持对公打款？</span>
-                                <i class="fas fa-chevron-down"></i>
+                    
+                    <div class="plan-features">
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
                             </div>
-                            <div class="faq-answer">
-                                <p>支持，请选择"定制"计划后联系商务人员。</p>
-                            </div>
+                            <div class="feature-text">单批次 <span class="highlight-feature">16张</span> 图片</div>
                         </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span>2、是否可开发票？</span>
-                                <i class="fas fa-chevron-down"></i>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
                             </div>
-                            <div class="faq-answer">
-                                <p>标准计划和定制计划支持开具发票，基础计划不支持。</p>
-                            </div>
+                            <div class="feature-text">无限并发批次</div>
                         </div>
-                        <div class="faq-item">
-                            <div class="faq-question">
-                                <span>3、是否支持退款？</span>
-                                <i class="fas fa-chevron-down"></i>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
                             </div>
-                            <div class="faq-answer">
-                                <p>充值积分后不支持退款，请按需充值。</p>
+                            <div class="feature-text">支持 <span class="highlight-feature">2台</span> 设备同时登录</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
                             </div>
+                            <div class="feature-text"><span class="highlight-feature">无水印</span> 下载</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon cross">
+                                <i class="fas fa-times" style="background: #e74c3c;"></i>
+                            </div>
+                            <div class="feature-text">无商业授权</div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-button">
+                        <button class="btn">立即订阅</button>
+                    </div>
+                </div>
+                
+                <!-- 中级档 -->
+                <div class="plan-card"  data-plan-id="intermediate">
+                    <div class="plan-header">
+                        <h3>中级会员</h3>
+                        <div class="plan-price">¥99</div>
+                        <div class="plan-price-info">每月100,000积分 ≈10,000张图</div>
+                        <div class="plan-storage">60GB 存储空间</div>
+                    </div>
+                    
+                    <div class="plan-features">
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">单批次 <span class="highlight-feature">20张</span> 图片</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">无限并发批次</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">支持 <span class="highlight-feature">3台</span> 设备同时登录</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text"><span class="highlight-feature">无水印</span> 下载</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text"><span class="highlight-feature">基本</span> 商业授权</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon check">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="feature-text">新功能 <span class="highlight-feature">优先体验</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-button">
+                        <button class="btn">立即订阅</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 修复后的FAQ部分 -->
+            <div class="faq-section">
+                <h2 class="faq-header">常见问题</h2>
+                
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <span>是否支持对公打款？</span>
+                            <i class="fas fa-chevron-down faq-expand-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>支持，请选择"定制"计划后联系商务人员。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <span>积分会过期吗？</span>
+                            <i class="fas fa-chevron-down faq-expand-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>免费计划获得的积分有效期为30天，付费会员永久有效。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <span>如何取消订阅？</span>
+                            <i class="fas fa-chevron-down faq-expand-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>您可以在订阅详情中随时取消，剩余有效期内仍可使用服务。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <span>是否支持多设备同时登录？</span>
+                            <i class="fas fa-chevron-down faq-expand-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>各会员级别支持同时登录的设备数不同：基础版1台，初级会员2台，中级会员3台，高级会员5台。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <span>商业授权包含哪些权利？</span>
+                            <i class="fas fa-chevron-down faq-expand-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>中级会员提供基本商业授权，允许在网站、社交媒体和小型商业应用中使用；高级会员提供完全商业授权，适用于广告、产品包装等场景。</p>
                         </div>
                     </div>
                 </div>

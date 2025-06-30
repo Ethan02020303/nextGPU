@@ -104,6 +104,12 @@ async function sendUserInfo(userName) {
                 document.getElementById('user-workflows').textContent = workflowText;
                 document.getElementById('user-images').textContent = images;
                 document.getElementById('user-storage').textContent = storageText;
+
+                document.getElementById('mobile-credits').textContent = credits;
+                document.getElementById('mobile-workflows').textContent = workflowText;
+                document.getElementById('mobile-images').textContent = images;
+                document.getElementById('mobile-storage').textContent = storageText;
+
                 // 隐藏加载状态
                 showUserLoading(false);
             } else {
@@ -179,13 +185,14 @@ async function sendTitle(title) {
     }
 }
 
-async function sendNewTask(title, imageCount, imagePath, taskID, selectedRatio, promptText) {
+async function sendNewTask(userName, title, imageCount, imagePath, taskID, selectedRatio, promptText) {
     try {
         const parameters = {
             imageRatio: selectedRatio,
             promptText: promptText
         };
         const requestData = {
+            userName: userName,
             title: title,
             inputType: "text",
             inputImageScaledRatio: 8,
@@ -262,6 +269,89 @@ async function sendLogin(userName, password) {
         }
     } catch (error) {
         alert(`任务提交失败: ${error.message}`);
+        return [];
+    }
+}
+
+// 发送订阅会员
+async function sendSubscription(planId) {
+    try {
+        const requestData = {
+            subscriptionID: planId,
+        };
+        const response = await fetch(`${BASE_URL}/subscription`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        const data = await response.json();
+        if (data.codeId === 200) {
+            return data.workflowBase;
+        } else {
+            throw new Error(`API错误: ${data.msg || '未知错误'}`);
+        }
+    } catch (error) {
+        const container = document.getElementById('model-categories');
+        container.innerHTML = `
+        <div class="error-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>分类加载失败</span>
+        </div>
+        `;
+        return [];
+    }
+}
+
+async function sendMyNodes(userName) {
+    try {
+        const requestData = {
+            userName: userName,
+        };
+        const response = await fetch(`${BASE_URL}/getMyNode?userName=${encodeURIComponent(userName)}`, {
+            method: 'GET',
+        });
+        const data = await response.json();
+        if (data.codeId === 200) {
+            return data.nodes;
+        } else {
+            throw new Error(`API错误: ${data.msg || '未知错误'}`);
+        }
+    } catch (error) {
+        const container = document.getElementById('model-categories');
+        container.innerHTML = `
+        <div class="error-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>加载任务失败</span>
+        </div>
+        `;
+        return [];
+    }
+}
+
+async function sendMyTasks(userName) {
+    try {
+        const requestData = {
+            userName: userName,
+        };
+        const response = await fetch(`${BASE_URL}/getMyAllTasks?userName=${encodeURIComponent(userName)}`, {
+            method: 'GET',
+        });
+        const data = await response.json();
+        if (data.codeId === 200) {
+            return data.tasks;
+        } else {
+            throw new Error(`API错误: ${data.msg || '未知错误'}`);
+        }
+    } catch (error) {
+        const container = document.getElementById('model-categories');
+        container.innerHTML = `
+        <div class="error-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>加载任务失败</span>
+        </div>
+        `;
         return [];
     }
 }

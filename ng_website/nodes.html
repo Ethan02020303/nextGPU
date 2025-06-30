@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nextGPU - 算力节点</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/nodes.css">
+</head>
+<body>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <span>nextGPU</span>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar" id="user-avatar">用户</div> 
+                <div class="user-details">
+                    <h3 id="user-name">设计师</h3> 
+                    <p>VIP会员</p>
+                </div>
+            </div>
+            
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span>剩余积分</span>
+                    <span id="user-credits" class="stat-value">加载中...</span>
+                </div>
+                <div class="stat-item">
+                    <span>工作流</span>
+                    <span id="user-workflows" class="stat-value">加载中...</span>
+                </div>
+                <div class="stat-item">
+                    <span>图片</span>
+                    <span id="user-images" class="stat-value">加载中...</span>
+                </div>
+                <div class="stat-item">
+                    <span>存储空间</span>
+                    <span id="user-storage" class="stat-value">加载中...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-group">
+                <h4 class="menu-group-title">算力节点</h4>
+                <div class="menu-item active" onclick="window.location.href='nodes.html'">
+                    <i class="fas fa-th-large"></i>
+                    <span>我的算力</span>
+                </div>
+                <div class="menu-item" onclick="window.location.href='task.html'">
+                    <i class="fas fa-bolt"></i>
+                    <span>任务明细</span>
+                </div>
+                <div class="menu-item" onclick="window.location.href='install.html'">
+                    <i class="fas fa-search"></i>
+                    <span>安装教程</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加移动端元素 -->
+        <div class="mobile-stats">
+            <div class="mobile-stat-item">
+                <div>剩余积分</div>
+                <div id="mobile-credits">加载中...</div>
+            </div>
+            <div class="mobile-stat-item">
+                <div>工作流</div>
+                <div id="mobile-workflows">加载中...</div>
+            </div>
+            <div class="mobile-stat-item">
+                <div>图片</div>
+                <div id="mobile-images">加载中...</div>
+            </div>
+            <div class="mobile-stat-item">
+                <div>存储空间</div>
+                <div id="mobile-storage">加载中...</div>
+            </div>
+        </div>
+        
+        <!--  -->
+        <div class="sidebar-footer">
+            <div class="footer-title">设置与支持</div>
+            <div class="footer-links">
+                <a href="#">微信公众号</a>
+                <a href="#">小红书</a>
+                <a href="#">抖音</a>
+                <a href="#">B站</a>
+                <a href="#">用户协议</a>
+                <a href="#">隐私政策</a>
+                <a href="#">关于我们</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- 顶部工具栏 -->
+        <div class="topbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索模型、创作者、灵感...">
+            </div>
+            <div class="topbar-actions">
+                <div class="action-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 卡片展示区域 -->
+        <div class="projects-grid" id="projects-container">
+            <!-- 卡片将通过JS动态渲染到这里 -->
+        </div>
+        
+        <div id="loader" class="loader" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i> 正在加载数据...
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            数据加载失败，请重试
+        </div>
+        
+        <template id="github-card-template">
+            <div class="github-card">
+                <!-- 顶部信息 -->
+                <div class="card-top">
+                    <div class="avatar-container">
+                        <div class="author-avatar"></div>
+                        <div class="node-info">
+                            <div class="node-ip">
+                                <span class="ip-highlight">142.170.89.97</span>
+                            </div>
+                            <div class="node-status status-highlight online">在线</div>
+                        </div>
+                        <span class="recommended">推荐节点</span>
+                    </div>
+                    <div class="timestamps">
+                        <div class="register-time time-highlight">注册时间: <span class="value">2023-01-10</span></div>
+                        <div class="last-online time-highlight">最近上线: <span class="value">2023-10-15 14:30</span></div>
+                    </div>
+                </div>
+                
+                <!-- UUID显示 -->
+                <div class="repo-name">
+                    <span class="repo-icon">🔑</span>
+                    <span class="systemUUID uuid-highlight">e03ccaa1-11ab-47c4-be44-f9269383e609</span>
+                </div>
+                
+                <!-- 数据统计 -->
+                <div class="card-middle">
+                    <div class="data-box runtime">
+                        <span class="label">累计在线时长</span>
+                        <span class="value highlight-number">0<span class="blue-highlight">秒</span></span>
+                    </div>
+                    <div class="data-box tasks">
+                        <span class="label">子任务数</span>
+                        <span class="value highlight-number">0<span class="task-count">45</span></span>
+                    </div>
+                    <div class="data-box gpu-time">
+                        <span class="label">GPU耗时</span>
+                        <span class="value highlight-number">0<span class="blue-highlight">毫秒</span></span>
+                    </div>
+                    <div class="data-box cur-queue">
+                        <span class="label">队列数量</span>
+                        <span class="value highlight-number">0<span class="blue-highlight"></span></span>
+                    </div>
+                </div>
+                
+                <!-- 系统信息 -->
+                <div class="system-info">
+                    <span class="label">系统:</span>
+                    <span class="os-version"><span class="blue-highlight">ubuntu 22.04</span></span>
+                </div>
+                
+                <!-- GPU信息 -->
+                <div class="gpu-uuid-info">
+                    <span class="label">显卡:</span>
+                    <span class="gpu-details"><span class="blue-highlight">NVIDIA GeForce RTX 3070(UUID: GPU-7e2e0401-9ba4-f5c9-5d47-231a882f1b5f)</span></span>
+                </div>
+            </div>
+        </template>
+    </div>
+    <script src="js/nodes.js"></script>
+    <script src="js/base.js"></script>
+    <script src="js/sendMessage.js"></script>
+</body>
+</html>
