@@ -1,7 +1,8 @@
 <div align="center">
 
-# nextGPU
+# [nextGPU](www.nextgpu.net)
 **Leveraging Idle GPU Computing Power to Harness AI Workflows.**
+
 
 
 ![nextGPU Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/index.png)
