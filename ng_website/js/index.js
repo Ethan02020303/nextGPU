@@ -122,20 +122,55 @@ function loadData() {
     fetchCurNodes();
 }
 
+function updateLoginUI() {
+    const { logined, userName } = checkLoginStatus();
+    const userInfo = document.getElementById('userInfo');
+    const guestButtons = document.querySelector('.guest-buttons');
+    
+    if (logined) {
+        userInfo.style.display = 'flex';
+        guestButtons.style.display = 'none';
+        document.getElementById('userName').textContent = userName;
+    } else {
+        userInfo.style.display = 'none';
+        guestButtons.style.display = 'flex';
+    }
+}
 
+function logout() {
+    setLoginStatus(false, '');
+    updateLoginUI();
+}
+
+// 新增登出函数
 document.addEventListener('DOMContentLoaded', async function() {
     //加载数据
+    // logout();
     loadData();
+    updateLoginUI();
 
-    //判断用户是否已经登录
-    const {logined, userName} = checkLoginStatus();
-    if (logined) {
-        document.querySelector('.auth-buttons').innerHTML = `
-            <a href="#" class="btn btn-primary">
-                <i class="fas fa-user-circle"></i> ${userName}
-            </a>
-        `;
-    }
+
+    // 添加登出事件监听
+    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+    });
+
+
+
+    document.querySelector('a[href="files/install.sh"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // 创建隐藏的下载链接
+        const link = document.createElement('a');
+        link.href = this.href;
+        link.download = 'install.sh';
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 
     // 移动端菜单切换
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
@@ -214,6 +249,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     //     });
     // });
 
+    
 
 
 
@@ -295,11 +331,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             if(res.codeId === 200) {
                 setLoginStatus(true, username)
                 loginMessage.style.display = 'none';
-                document.querySelector('.auth-buttons').innerHTML = `
-                    <a href="#" class="btn btn-primary">
-                        <i class="fas fa-user-circle"></i> ${username}
-                    </a>
-                `;
+                updateLoginUI();
+                // document.querySelector('.auth-buttons').innerHTML = `
+                //     <a href="#" class="btn btn-primary">
+                //         <i class="fas fa-user-circle"></i> ${username}
+                //     </a>
+                // `;
                 setTimeout(() => {
                     closeModal();
                     // alert(`欢迎回来，${username}！您已成功登录。`);

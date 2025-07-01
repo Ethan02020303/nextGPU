@@ -30,8 +30,16 @@
                 </ul>
             </nav>
             <div class="auth-buttons">
-                <a href="#" class="btn btn-outline" id="loginBtn">登录</a>
-                <a href="#" class="btn btn-primary" id="registerBtn">注册账户</a>
+                <!-- 登录状态显示退出按钮 -->
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <span class="user-name" id="userName"></span>
+                    <button class="btn btn-outline" id="logoutBtn">退出</button>
+                </div>
+
+                <div class="guest-buttons">
+                    <a href="#" class="btn btn-outline" id="loginBtn">登录</a>
+                    <a href="#" class="btn btn-primary" id="registerBtn">注册账户</a>
+                </div>
             </div>
         </div>
     </header>
@@ -45,7 +53,7 @@
                 <h1>利用闲置GPU算力赋能AI工作流</h1>
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <a href="market.html" class="btn btn-primary">一键生成</a>
-                    <a href="" class="btn btn-outline">算力安装脚本</a>
+                    <a href="files/install.sh" class="btn btn-outline">算力安装脚本</a>
                 </div>
             </div>
             <div class="hero-visual">
@@ -328,6 +336,14 @@
                         <a href="#" class="wechat" title="微信公众号">
                             <i class="fab fa-weixin"></i>
                         </a>
+                        <!-- 新增 YouTube 图标 -->
+                        <a href="https://www.youtube.com/@nextGPUBusiness" class="youtube" target="_blank" title="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <!-- 新增 B站 图标 -->
+                        <a href="https://x.com/ethan191187" class="twitter" target="_blank" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-column"></div>
@@ -339,7 +355,6 @@
                         <li><a href="#">我们的技术</a></li>
                         <li><a href="#">发展路线</a></li>
                         <li><a href="#">团队</a></li>
-                        <li><a href="#">加入我们</a></li>
                     </ul>
                 </div>
 
@@ -347,10 +362,9 @@
                 <div class="footer-column">
                     <h3>资源中心</h3>
                     <ul class="footer-links">
-                        <li><a href="#">文档</a></li>
                         <li><a href="files/nextGPU.pptx">Deck中心</a></li>
                         <li><a href="api.html">API开放平台</a></li>
-                        <li><a href="#">常见问题</a></li>
+                        <li><a href="subscription.html">订阅中心</a></li>
                     </ul>
                 </div>
             </div>

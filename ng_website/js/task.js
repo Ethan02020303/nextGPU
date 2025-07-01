@@ -57,8 +57,8 @@ async function renderTasks(tasks) {
             const infoItems = card.querySelectorAll('.info-item');
             infoItems[0].querySelector('.info-value').textContent = task.systemUUID;
             infoItems[1].querySelector('.info-value').textContent = task.nodeIP;
-            infoItems[2].querySelector('.info-value').textContent = task.gpuModel;
-            infoItems[3].querySelector('.info-value').textContent = task.estimatedDuration;
+            infoItems[2].querySelector('.info-value').textContent = task.estimatedDuration;
+            infoItems[3].querySelector('.info-value').textContent = task.gpuModel;
             
             // 添加卡片动画
             const cardEl = card.querySelector('.task-card');

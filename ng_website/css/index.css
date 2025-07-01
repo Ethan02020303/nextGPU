@@ -156,6 +156,71 @@ nav ul li a:hover::after {
     color: var(--dark);
 }
 
+
+
+
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-name {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* 登出按钮样式 */
+#logoutBtn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#logoutBtn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 主视觉区域 */
 .hero {
     background: linear-gradient(120deg, #0f172a, #1e293b);
@@ -717,6 +782,10 @@ footer {
 .social-icons .discord:hover { background-color: #5865F2; }
 .social-icons .telegram:hover { background-color: #26A5E4; }
 .social-icons .wechat:hover { background-color: #07C160; }
+.social-icons .youtube:hover { background-color: #ff00009f; }
+.social-icons .bilibili:hover { background-color: #0087b6; }
+
+
 
 .footer-column h3 {
     font-size: 1.2rem;
@@ -983,6 +1052,12 @@ footer {
 @media (max-width: 768px) {
     .mobile-menu-btn {
         display: block;
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
     
     nav {

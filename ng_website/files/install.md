@@ -28,7 +28,7 @@ nextGPU
 
 ​安装依赖工具:
 1：sudo apt update
-2：sudo apt install ca-certificates curl gnupg lsb-release
+2：sudo apt -y install ca-certificates curl gnupg lsb-release
 
 添加Docker官方GPG密钥:
 1: sudo mkdir -p /etc/apt/keyrings
@@ -39,7 +39,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 
 安装Docker引擎:
 1: sudo apt update
-2: sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+2: sudo apt -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ​验证安装:
 sudo docker run hello-world
@@ -73,7 +73,7 @@ docker-compose --version
 - 运行安装脚本
 
 ```json
-sudo ./install.sh
+sudo ./install.sh --userName [userName]
 ```
 
 - 按照提示输入你的账号信息

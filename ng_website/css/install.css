@@ -217,8 +217,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 0 0 20px 20px; /* 添加左内边距避免被左边栏压住 */
-    margin-top: 0; /* 移除默认顶部外边距 */
+    overflow-y: auto;
 }
 
 /* 顶部工具栏 */
@@ -549,6 +548,63 @@ body {
 }
 
 /* Markdown内容样式 */
+
+
+        /* 全局文字优化 */
+        .markdown-body {
+        font-size: 18px;          /* 增加基础字号 */
+        line-height: 1.75;        /* 加大行间距 */
+        /* color: #374151;           深灰代替纯黑 */
+        color: #333; /* 更深的文字颜色 */
+        font-family: 'Segoe UI', system-ui, sans-serif; /* 更现代字体 */
+        }
+
+        .markdown-body h2 {
+        font-size: 1.8rem;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #2563eb; /* 更粗的蓝线 */
+        }
+
+        /* 列表项增强 */
+        .markdown-body ol li {
+        margin-bottom: 1rem;      /* 增加列表项间距 */
+        position: relative;
+        left: 1.5rem;             /* 列表缩进对齐 */
+        }
+
+        /* 说明文字处理 */
+        .markdown-body li > p {
+        color: #4b5563;           /* 次级文字灰度 */
+        font-size: 0.95em;        /* 略小于正文字号 */
+        margin-top: 0.5rem;       /* 添加顶部留白 */
+        }
+
+        /* 代码块优化 */
+        .markdown-body code {
+        background-color: #f9fafb; /* 浅灰背景 */
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+        font-family: 'SFMono-Regular', Consolas, monospace;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         .markdown-content {
             background-color: white;
             border-radius: 12px;
@@ -608,7 +664,7 @@ body {
             background: #f1f5f9;
             padding: 2px 6px;
             border-radius: 4px;
-            color: #dc2626;
+            color: #333;
         }
         
         .markdown-content pre code {

@@ -1,5 +1,5 @@
-const BASE_URL = 'http://54.238.152.179:8080/node';
-const TASK_URL = 'http://54.238.152.179:9080/session';
+const BASE_URL = 'https://www.nextgpu.net/node';
+const TASK_URL = 'https://www.nextgpu.net/session';
 
 /**
  * 获取并更新用户信息
