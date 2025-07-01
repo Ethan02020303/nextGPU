@@ -3,8 +3,6 @@
 # [nextGPU](www.nextgpu.net)
 **Leveraging Idle GPU Computing Power to Harness AI Workflows.**
 
-
-
 ![nextGPU Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/index.png)
 [home]
 
@@ -15,6 +13,8 @@
 [tasks]
 </div>
 
+## nextGPU official website address?​
+* https://www.nextgpu.net
 
 ## What is nextGPU?​
 nextGPU is a decentralized computing power network platform dedicated to providing computational support for AI workflows. It aggregates idle GPU resources from the market, processes them through interconnection, interoperability, and performance measurement, and constructs an efficient hardware infrastructure for AI workflows. When users submit AI task requests, nextGPU intelligently dispatches tasks to the most suitable GPU computing nodes for execution and returns processed results to users.
