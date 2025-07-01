@@ -6,7 +6,13 @@
 
 
 ![nextGPU Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/index.png)
+(home)
+
 ![nextGPU Node Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/nodes.png)
+(nodes)
+
+![nextGPU Node Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/tasks.png)
+(tasks)
 </div>
 
 
