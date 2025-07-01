@@ -127,8 +127,6 @@ async function filterModelsByCategory(categoryName) {
     }
 }
 
-//——————————————————卡片渲染————————————————————————————
-
 // 获取模型数据的函数
 async function fetchModels() {
     try {
@@ -218,15 +216,16 @@ function renderModels(models) {
         //添加点击跳转
         const card = clone.querySelector('.model-card');
         card.addEventListener('click', function() {
-            navigateToDetailPage(model);
+            if(model.badge === 0 || model.badge === 1) {
+                navigateToDetailPage(model);
+            }else if (model.badge === 2) {
+                alert("此工作流正在审核，无法选择！")
+            }
         });
-
         container.appendChild(clone);
     });
 }
 
-
-// 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         const {logined, userName} = checkLoginStatus();
