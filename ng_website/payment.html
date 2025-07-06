@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subscription Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            width: 60%;
+            margin: 100px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+        .info {
+            background-color: #eee;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subscription Successful</h1>
+        <p>Thank you for your payment. Your subscription details are below:</p>
+        <div class="info">
+            <p><strong>Amount Paid:</strong> <span id="amountPaid">$39.99</span></p>
+            <p><strong>Email:</strong> <span id="email">your-email@example.com</span></p>
+            <p><strong>Your Key:</strong> <span id="key">ABCD1234EFGH</span></p>
+        </div>
+        <button class="button" onclick="closeWindow()">Confirm</button>
+        <p>If you have any questions, please contact support.</p>
+    </div>
+
+    <script>
+        function getQueryParam(param) {
+            var queryString = window.location.search.substring(1);
+            var params = queryString.split('&');
+            for (var i = 0; i < params.length; i++) {
+                var pair = params[i].split('=');
+                if (pair[0] === param) {
+                    return decodeURIComponent(pair[1].replace(/\+/g, ' '));
+                }
+            }
+            return null;
+        }
+
+        document.getElementById('amountPaid').textContent = getQueryParam('amount') || '$39.99';
+        document.getElementById('email').textContent = getQueryParam('email') || 'your-email@example.com';
+        document.getElementById('key').textContent = getQueryParam('key') || 'ABCD1234EFGH';
+
+        function closeWindow() {
+            window.close();
+        }
+    </script>
+</body>
+</html>

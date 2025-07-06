@@ -14,7 +14,7 @@ async function sendUserInfo(userName) {
             document.getElementById('user-name').textContent = "未登录";
             document.getElementById('user-credits').textContent = 0;
             document.getElementById('user-workflows').textContent = "0/0";
-            document.getElementById('user-images').textContent = 0;
+            document.getElementById('user-images').textContent = "0/0";
             document.getElementById('user-storage').textContent = "0/0";
 
             const userAvatarElement = document.getElementById('user-avatar');
@@ -28,7 +28,7 @@ async function sendUserInfo(userName) {
             //models
             document.getElementById('mobile-credits').textContent = 0;
             document.getElementById('mobile-workflows').textContent = "0/0";
-            document.getElementById('mobile-images').textContent = 0;
+            document.getElementById('mobile-images').textContent = "0/0";
             document.getElementById('mobile-storage').textContent = "0/0";
         }else{
             // 显示加载状态
@@ -73,41 +73,45 @@ async function sendUserInfo(userName) {
                 // 3. 更新VIP状态（如果存在）
                 const vipLevelElement = document.querySelector('.user-details p');
                 if (vipLevelElement) {
-                    if (userData.level === 1) {
-                        vipLevelElement.textContent = 'VIP会员';
-                        vipLevelElement.style.backgroundColor = '#ff9800'; // 金色
-                    } else if (userData.level > 1) {
-                        vipLevelElement.textContent = `SVIP${userData.level}`;
-                        vipLevelElement.style.backgroundColor = '#d50000'; // 红色
-                    } else {
-                        vipLevelElement.textContent = '普通会员';
-                        vipLevelElement.style.backgroundColor = '#9e9e9e'; // 灰色
+                    if (userData.level === 0) {
+                        vipLevelElement.textContent = '普通用户';
+                        vipLevelElement.style.backgroundColor = '#3498db'; 
+                    } else if (userData.level === 1) {
+                        vipLevelElement.textContent = '初级会员';
+                        vipLevelElement.style.backgroundColor = '#2ecc71'; 
+                    } else if(userData.level === 2) {
+                        vipLevelElement.textContent = '中级会员';
+                        vipLevelElement.style.backgroundColor = '#e67e22'; 
                     }
                 }
                 // 4. 更新统计信息
                 const credits = userData.credits || 0;
-                const images = userData.images || 0;
+                // const images = userData.images || 0;
                 // 工作流数据
                 const workflowText = userData.workflows && userData.workflows.used !== undefined && userData.workflows.total !== undefined
                     ? `${userData.workflows.used}/${userData.workflows.total}`
+                    : '0/0';
+                // 图片数量
+                const imagesText = userData.images && userData.images.used !== undefined && userData.images.total !== undefined
+                    ? `${userData.images.used}/${userData.images.total}`
                     : '0/0';
                 // 存储空间数据 (从字节转换为GB)
                 const storageUsedGB = userData.storage && userData.storage.used !== undefined 
                     ? (userData.storage.used / (1024 * 1024 * 1024)).toFixed(2)
                     : 0;
                 const storageTotalGB = userData.storage && userData.storage.total !== undefined 
-                    ? (userData.storage.total / (1024 * 1024 * 1024)).toFixed(2)
+                    ? (userData.storage.total * 1000 * 1000 / (1000 * 1000 * 1000)).toFixed(2)
                     : 0;
                 const storageText = `${storageUsedGB}GB/${storageTotalGB}GB`;
                 // 更新DOM元素
                 document.getElementById('user-credits').textContent = credits;
                 document.getElementById('user-workflows').textContent = workflowText;
-                document.getElementById('user-images').textContent = images;
+                document.getElementById('user-images').textContent = imagesText;
                 document.getElementById('user-storage').textContent = storageText;
 
                 document.getElementById('mobile-credits').textContent = credits;
                 document.getElementById('mobile-workflows').textContent = workflowText;
-                document.getElementById('mobile-images').textContent = images;
+                document.getElementById('mobile-images').textContent = imagesText;
                 document.getElementById('mobile-storage').textContent = storageText;
 
                 // 隐藏加载状态
@@ -273,36 +277,7 @@ async function sendLogin(userName, password) {
     }
 }
 
-// 发送订阅会员
-async function sendSubscription(planId) {
-    try {
-        const requestData = {
-            subscriptionID: planId,
-        };
-        const response = await fetch(`${BASE_URL}/subscription`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-        const data = await response.json();
-        if (data.codeId === 200) {
-            return data.workflowBase;
-        } else {
-            throw new Error(`API错误: ${data.msg || '未知错误'}`);
-        }
-    } catch (error) {
-        const container = document.getElementById('model-categories');
-        container.innerHTML = `
-        <div class="error-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>分类加载失败</span>
-        </div>
-        `;
-        return [];
-    }
-}
+
 
 async function sendMyNodes(userName) {
     try {
@@ -352,6 +327,60 @@ async function sendMyTasks(userName) {
             <span>加载任务失败</span>
         </div>
         `;
+        return [];
+    }
+}
+
+
+
+// 发送订阅会员
+async function sendSubscription(userName, planId) {
+    try {
+        const requestData = {
+            userName: userName,
+            subscriptionID: planId,
+        };
+        const response = await fetch(`${BASE_URL}/wechatPayment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        const data = await response.json();
+        if (data.codeId === 200) {
+            return data;
+        } else {
+            throw new Error(`API错误: ${data.msg || '未知错误'}`);
+        }
+    } catch (error) {
+        alert("订阅失败，请检查您的网络！")
+        return [];
+    }
+}
+
+
+// 发送订阅查询
+async function sendCheckSubscription(currentOrderId) {
+    try {
+        const requestData = {
+            orderID: currentOrderId,
+        };
+        const response = await fetch(`${BASE_URL}/wechatPayStatus`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        const data = await response.json();
+        if (data.codeId === 200) {
+            return data;
+        } else {
+            throw new Error(`API错误: ${data.msg || '未知错误'}`);
+        }
+    } catch (error) {
+        alert("订阅失败，请检查您的网络！")
         return [];
     }
 }

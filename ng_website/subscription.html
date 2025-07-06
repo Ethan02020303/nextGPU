@@ -218,7 +218,7 @@
                     </div>
                     
                     <div class="plan-button">
-                        <button class="btn">立即订阅</button>
+                        <button class="btn" id="primaryPlanBtn">立即订阅</button>
                     </div>
                 </div>
                 
@@ -271,7 +271,7 @@
                     </div>
                     
                     <div class="plan-button">
-                        <button class="btn">立即订阅</button>
+                        <button class="btn" id="intermediatePlanBtn">立即订阅</button>
                     </div>
                 </div>
             </div>
@@ -339,10 +339,59 @@
                 </div>
             </div>
 
+            <div id="paymentModal" class="payment-modal">
+                <div class="modal-content">
+                    <!-- 头部 -->
+                    <div class="modal-header">
+                        <h3 class="modal-title">订阅支付</h3>
+                        <div class="close-modal" id="closeModal">&times;</div>
+                    </div>
+                    
+                    <!-- 支付方式标签 -->
+                    <div class="payment-tabs">
+                        <div class="tab-button active" data-tab="wechat">微信支付</div>
+                        <div class="tab-button" data-tab="alipay">支付宝支付</div>
+                    </div>
+                    
+                    <!-- 内容区域 -->
+                    <div class="qr-container" id="paymentContainer">
+                        <!-- 商品信息 -->
+                        <div class="payment-info">
+                            <div class="plan-name" id="planName">初级会员</div>
+                            <div class="amount" id="paymentAmount">￥29.00</div>
+                        </div>
+                        
+                        <!-- 二维码区域 -->
+                        <div class="qr-code-container">
+                            <div id="qrcode"></div> <!-- 二维码将在这里渲染 -->
+                            <div class="loader" id="qrLoader">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 支付说明 -->
+                        <div class="payment-instruction">
+                            请使用 <span id="paymentApp">微信</span> 扫描上方二维码完成支付<br>
+                            支付成功后，系统将自动更新您的订阅状态
+                        </div>
+                        
+                        <!-- 倒计时 -->
+                        <div class="timer">
+                            支付剩余时间: <span id="paymentTimer">05:00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 新增支付失败提示UI​ -->
+                    <div id="paymentStatusMessage" class="expiry-message" style="display:none;">
+                        <p id="statusText"></p>
+                    </div>
+                </div>
+            </div>           
         </div>
     </div>
     <script src="js/base.js"></script>
     <script src="js/sendMessage.js"></script>
     <script src="js/subscription.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
 </body>
 </html>
