@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  comfyui:
+#    build: .
+    init: true
+    container_name: base-manager
+    image: "nextgpu/base-manager:1.0.0"
+    ports:
+      - "8188:8188"
+    volumes:
+      - "${PWD}/output:/home/user/app/output"
+    environment:
+      - CLI_ARGS=--output-directory /home/user/app/output
+    security_opt:
+      - "label=type:nvidia_container_t"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]

@@ -28,30 +28,27 @@ nextGPU is a decentralized computing power network platform dedicated to providi
 
 ## Get Started
 
-#### [nextGPU resource](http://nextgpu.aihub.cool/)
+#### [nextGPU resource](https://www.nextgpu.net)
 - Computing power installation package [come soon]
 - Available on Windows & linux.
 
 ## idea generation
-#### [nextGPU workflow market](http://nextgpu.aihub.cool/market.html)
+#### [nextGPU workflow market](https://www.nextgpu.net/market.html)
 
 
 ![workflow market Screenshot](https://github.com/Ethan02020303/nextGPU/blob/main/ng_website/images/market.png)
 
 
 
-## workflow docker
-#### [flux docker](http://nextgpu.aihub.cool/market.html)
+## workflow docker compose file
+#### [sd1.5](https://github.com/Ethan02020303/nextGPU/blob/main/yaml/docker-compose_base.yaml)
+#### [sd1.5 & remove background](https://github.com/Ethan02020303/nextGPU/blob/main/yaml/docker-compose_removebg.yaml)
 
 
-
-
-
-
-
-
-
-
+## workflow docker compose execution method
+- Rename the YAML file to docker-compose.yaml
+- Use the cd command to navigate to the directory containing docker-compose.yaml
+- Run the command docker-compose up -d
 
 
 
