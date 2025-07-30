@@ -71,6 +71,31 @@ type OSSConfig struct {
 	BucketName      string `json:"bucketName"`
 }
 
+type WechatPaymentConfig struct {
+	MCHid             string `json:"mchid"`
+	SerialNo          string `json:"serialNo"`
+	ApiV3Key          string `json:"apiV3Key"`
+	PrivateKeyFile    string `json:"privateKeyFile"`
+	AppID             string `json:"appID"`
+	NotifyUrl         string `json:"notifyUrl"`
+	ContractNotifyUrl string `json:"contractNotifyUrl"`
+}
+
+type AliPaymentConfig struct {
+	AppID         string `json:"appID"`
+	APPPrivateKey string `json:"appPrivateKey"`
+	APPPublicKey  string `json:"appPublicKey"`
+	AliPublicKey  string `json:"aliPublicKey"`
+	AliRootKey    string `json:"aliRootKey"`
+	IsProd        bool   `json:"isProd"`
+	NotifyUrl     string `json:"notifyUrl"`
+}
+
+type PaymentConfig struct {
+	Wechat WechatPaymentConfig `json:"wechat"`
+	Ali    AliPaymentConfig    `json:"ali"`
+}
+
 type Config struct {
 	Application   ApplicationConfig   `json:"application"`
 	Mysql         MysqlConfig         `json:"mysql"`
@@ -81,6 +106,7 @@ type Config struct {
 	AITask        AITaskConfig        `json:"aiTask"`
 	MinRequest    MinRequestConfig    `json:"minRequest"`
 	ClientVersion ClientVersionConfig `json:"clientVersion"`
+	Payment       PaymentConfig       `json:"payment"`
 }
 
 type Configure struct {

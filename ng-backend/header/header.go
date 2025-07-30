@@ -6,4 +6,5 @@ const (
 	JsonParamNil   = Base + 2
 	OpenFileError  = Base + 3
 	DBError        = Base + 4
+	PaymentError   = Base + 5
 )

@@ -3,6 +3,26 @@
         "name": "MyApp",
         "comment": "This is a sample application configuration"
     },
+    "mysql": {
+        "Ip": "",
+        "Port": 3306,
+        "DBName": "",
+        "Charset": "",
+        "UserName": "",
+        "Password": ""
+    },
+    "aliOSS": {
+        "endpoint": "",
+        "accessKeyID": "",
+        "accessKeySecret": "",
+        "bucketName": "ngpu"
+    },
+    "aliLogOSS": {
+        "endpoint": "",
+        "accessKeyID": "",
+        "accessKeySecret": "",
+        "bucketName": "ngpu"
+    },
     "net": {
         "web": {
             "listen": "0.0.0.0:8080",
@@ -19,6 +39,45 @@
             "listen": "0.0.0.0:8082",
             "domain": "192.168.124.3"
         }
+    },
+    "measure": {
+        "unPassPercent": 0.2,
+        "measureCount": 2,
+        "measureWidth": 512,
+        "measureHeight": 512
+    },
+    "minRequest": {
+        "memory": 8589934592,
+        "core": 8
+    },
+    "aiTask": {
+        "aiTaskRecheckDays": 1,
+        "maxRetryCount": 3
+    },
+    "clientVersion": {
+        "version": "1.0.1",
+        "createTime": "2025-05-13",
+        "domain": "http://192.168.124.3:8080",
+        "updateFile": "/root/go/src/github.com/nextGPU/ng-cloud/client.json"
+    },
+    "payment": {
+        "wechat": {
+            "appID": "",
+            "mchid": "",
+            "serialNo": "",
+            "apiV3Key": "",
+            "privateKeyFile": "/root/go/src/github.com/nextGPU/ng-backend/payment/wechat/apiclient_key.pem",
+            "notifyUrl": "https://www.nextgpu.net/backend/wxNotify",
+            "contractNotifyUrl": "https://www.nextgpu.net/backend/wxNotify"
+        },
+        "ali": {
+            "appID": "",
+            "appPrivateKey": "/root/go/src/github.com/nextGPU/ng-backend/payment/ali/appPrivateKey.crt",
+            "appPublicKey": "/root/go/src/github.com/nextGPU/ng-backend/payment/ali/appCertPublicKey.crt",
+            "aliPublicKey": "/root/go/src/github.com/nextGPU/ng-backend/payment/ali/alipayCertPublicKey_RSA2.crt",
+            "aliRootKey": "/root/go/src/github.com/nextGPU/ng-backend/payment/ali/alipayRootCert.crt",
+            "isProd": true,
+            "notifyUrl": "https://www.nextgpu.net/backend/aliNotify"
+        }
     }
-
 }

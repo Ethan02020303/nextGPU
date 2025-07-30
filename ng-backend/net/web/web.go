@@ -16,15 +16,15 @@ var gWeb *Web
 
 func (w *Web) start() {
 	funName := "start"
-	log4plus.Info("start user gin listen")
-
-	nodeGroup := w.webGin.Group("/node")
+	log4plus.Info("%s user gin listen", funName)
+	nodeGroup := w.webGin.Group("/backend")
+	//nodeGroup.Use(business.SingletonBackend().SSOAuthMiddleware())
 	{
 		business.SingletonBackend().Start(nodeGroup)
 	}
 	log4plus.Info("%s start Run Listen=[%s]", funName, configure.SingletonConfigure().Net.Web.Listen)
 	if err := w.webGin.Run(configure.SingletonConfigure().Net.Web.Listen); err != nil {
-		log4plus.Error("start Run Failed Not Use Http Error=[%s]", err.Error())
+		log4plus.Error("%s Run Failed Not Use Http Error=[%s]", funName, err.Error())
 		return
 	}
 }

@@ -450,23 +450,10 @@ func (p *TaskDB) GetHistoryTasks(previousDay time.Time) (err error, tasks []*His
 		log4plus.Error(errString)
 		return errors.New(errString), nil
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_task_id,''), 
-       IFNULL(f_session,''), 
-       IFNULL(f_publish_time,''), 
-       IFNULL(f_title,''), 
-       IFNULL(f_input,''), 
-       IFNULL(f_state, 0), 
-       IFNULL(f_bill_mode, 0), 
-       IFNULL(f_sub_num, 0), 
-       IFNULL(f_workspace_id, ''), 
-       IFNULL(f_generated_data, ''), 
-       IFNULL(f_start_time, ''),
-       IFNULL(f_request, '') from t_jobs where 
-        f_publish_time>'%s' and 
-        f_session <> '00000000' and 
-        f_delete = 0 and 
-        (f_state <> 3 && f_state <> 4) ;`,
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_task_id,''), IFNULL(f_session,''), IFNULL(f_publish_time,''), 
+       IFNULL(f_title,''), IFNULL(f_input,''), IFNULL(f_state, 0), IFNULL(f_bill_mode, 0), IFNULL(f_sub_num, 0), 
+       IFNULL(f_workspace_id, ''), IFNULL(f_generated_data, ''), IFNULL(f_start_time, ''), IFNULL(f_request, '') from t_jobs where 
+        f_publish_time>'%s' and f_session <> '00000000' and f_delete = 0 and (f_state <> 3 && f_state <> 4) ;`,
 		previousDay.Format("2006-01-02 15:04:05"))
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
@@ -478,19 +465,9 @@ func (p *TaskDB) GetHistoryTasks(previousDay time.Time) (err error, tasks []*His
 	for rows.Next() {
 		task := HistoryTask{}
 		var tmpId int
-		scanErr := rows.Scan(&tmpId,
-			&task.TaskID,
-			&task.Session,
-			&task.PublishTime,
-			&task.WorkflowTitle,
-			&task.Input,
-			&task.State,
-			&task.BillMode,
-			&task.SubNum,
-			&task.WorkspaceID,
-			&task.GenerateData,
-			&task.StartTime,
-			&task.Request)
+		scanErr := rows.Scan(&tmpId, &task.TaskID, &task.Session, &task.PublishTime,
+			&task.WorkflowTitle, &task.Input, &task.State, &task.BillMode, &task.SubNum,
+			&task.WorkspaceID, &task.GenerateData, &task.StartTime, &task.Request)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -508,22 +485,10 @@ func (p *TaskDB) GetHistorySubTasks(tasks []*HistoryTask) error {
 		return errors.New(errString)
 	}
 	for _, task := range tasks {
-		sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_sub_id,''), 
-       IFNULL(f_start_time,''), 
-       IFNULL(f_end_time,''), 
-       IFNULL(f_estimate_time,''), 
-       IFNULL(f_input,''), 
-       IFNULL(f_system_uuid,''), 
-       IFNULL(f_state, 0),  
-       IFNULL(f_workspace_id, ''), 
-       IFNULL(f_publish_time,''), 
-       IFNULL(f_create_time,''),
-       IFNULL(f_retry_count, 0),
-       IFNULL(f_error_nodes, ''),
-       IFNULL(f_failure_reason, '') from t_sub_jobs where 
-        f_task_id = '%s' and 
-        f_delete = 0 and 
+		sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_sub_id,''), IFNULL(f_start_time,''), IFNULL(f_end_time,''), 
+       IFNULL(f_estimate_time,''), IFNULL(f_input,''), IFNULL(f_system_uuid,''), IFNULL(f_state, 0),  IFNULL(f_workspace_id, ''), 
+       IFNULL(f_publish_time,''), IFNULL(f_create_time,''), IFNULL(f_retry_count, 0), IFNULL(f_error_nodes, ''),
+       IFNULL(f_failure_reason, '') from t_sub_jobs where f_task_id = '%s' and f_delete = 0 and 
         (f_state <> 3 && f_state <> 4) order by f_sub_id;`, task.TaskID)
 		rows, err := p.mysqlDb.Mysqldb.Query(sql)
 		if err != nil {
@@ -535,19 +500,9 @@ func (p *TaskDB) GetHistorySubTasks(tasks []*HistoryTask) error {
 		for rows.Next() {
 			subTask := HistorySubTask{}
 			var tmpId int
-			scanErr := rows.Scan(&tmpId,
-				&subTask.SubID,
-				&subTask.StartTime,
-				&subTask.EndTime,
-				&subTask.EstimateTime,
-				&subTask.Input,
-				&subTask.SystemUUID,
-				&subTask.State,
-				&subTask.WorkspaceID,
-				&subTask.PublishTime,
-				&subTask.CreateTime,
-				&subTask.RetryCount,
-				&subTask.ErrorNodes,
+			scanErr := rows.Scan(&tmpId, &subTask.SubID, &subTask.StartTime, &subTask.EndTime,
+				&subTask.EstimateTime, &subTask.Input, &subTask.SystemUUID, &subTask.State, &subTask.WorkspaceID,
+				&subTask.PublishTime, &subTask.CreateTime, &subTask.RetryCount, &subTask.ErrorNodes,
 				&subTask.FailReason)
 			if scanErr != nil {
 				log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
@@ -603,14 +558,8 @@ func (p *TaskDB) GetTaskID(taskID string) (error, MajorTask) {
 		return errors.New(errString), MajorTask{}
 	}
 	//得到主任务
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_title,''),
-       IFNULL(f_publish_time,''),
-       IFNULL(f_start_time,''),
-       IFNULL(f_completion_time,''),
-       IFNULL(f_state,''),
-       IFNULL(f_duration,0),
-       IFNULL(f_workspace_id,''),
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_title,''), IFNULL(f_publish_time,''), IFNULL(f_start_time,''),
+       IFNULL(f_completion_time,''), IFNULL(f_state,''), IFNULL(f_duration,0), IFNULL(f_workspace_id,''),
        IFNULL(f_sub_num,0) from t_jobs where f_task_id='%s';`, taskID)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
@@ -626,15 +575,8 @@ func (p *TaskDB) GetTaskID(taskID string) (error, MajorTask) {
 	exist := false
 	for rows.Next() {
 		var tmpId int
-		scanErr := rows.Scan(&tmpId,
-			&major.Title,
-			&major.PublishTime,
-			&major.StartTime,
-			&major.CompletionTime,
-			&major.State,
-			&major.Duration,
-			&major.WorkspaceID,
-			&major.SubNum)
+		scanErr := rows.Scan(&tmpId, &major.Title, &major.PublishTime, &major.StartTime,
+			&major.CompletionTime, &major.State, &major.Duration, &major.WorkspaceID, &major.SubNum)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -642,27 +584,17 @@ func (p *TaskDB) GetTaskID(taskID string) (error, MajorTask) {
 		if tmpId != -1 {
 			exist = true
 		}
-
 	}
-
 	if !exist {
 		return errors.New("not found taskID"), MajorTask{}
 	}
 	//得到子任务
-	sql = fmt.Sprintf(`select IFNULL(a.f_id,-1), 
-       IFNULL(a.f_sub_id,''),
-       IFNULL(a.f_create_time,''),
-       IFNULL(a.f_start_time,''),
-       IFNULL(a.f_end_time,''),
-       IFNULL(a.f_estimate_time,0),
-       IFNULL(a.f_system_uuid,''),
-       IFNULL(b.f_node_ip,''),
-       IFNULL(a.f_state,0),
-       IFNULL(a.f_publish_time,''),
-       IFNULL(a.f_urls,''),
-       IFNULL(a.f_oss_duration,''),
-       IFNULL(a.f_oss_size,''),
-       IFNULL(a.f_inference_duration,0) from t_sub_jobs as a, t_nodes as b where a.f_system_uuid=b.f_system_uuid and a.f_task_id='%s';`, taskID)
+	sql = fmt.Sprintf(`select IFNULL(a.f_id,-1), IFNULL(a.f_sub_id,''), IFNULL(a.f_create_time,''),
+       IFNULL(a.f_start_time,''), IFNULL(a.f_end_time,''), IFNULL(a.f_estimate_time,0), IFNULL(a.f_system_uuid,''),
+       IFNULL(b.f_node_ip,''), IFNULL(a.f_state,0), IFNULL(a.f_publish_time,''), IFNULL(a.f_urls,''),
+       IFNULL(a.f_oss_duration,''), IFNULL(a.f_oss_size,''),
+       IFNULL(a.f_inference_duration,0) from t_sub_jobs as a, t_nodes as b where a.f_system_uuid=b.f_system_uuid and a.f_task_id='%s';`,
+		taskID)
 	rowsSubID, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -674,19 +606,10 @@ func (p *TaskDB) GetTaskID(taskID string) (error, MajorTask) {
 	for rowsSubID.Next() {
 		var tmpId int
 		var minor MinorTask
-		scanErr := rowsSubID.Scan(&tmpId,
-			&minor.SubID,
-			&minor.CreateTime,
-			&minor.StartTime,
-			&minor.EndTime,
-			&minor.EstimateTime,
-			&minor.SystemUUID,
-			&minor.NodeIP,
-			&minor.State,
-			&minor.PublishTime,
-			&minor.OSSUrls,
-			&minor.OSSDurations,
-			&minor.OSSSizes,
+		scanErr := rowsSubID.Scan(&tmpId, &minor.SubID, &minor.CreateTime,
+			&minor.StartTime, &minor.EndTime, &minor.EstimateTime, &minor.SystemUUID,
+			&minor.NodeIP, &minor.State, &minor.PublishTime, &minor.OSSUrls,
+			&minor.OSSDurations, &minor.OSSSizes,
 			&minor.InferenceDuration)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())

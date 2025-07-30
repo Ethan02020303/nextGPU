@@ -86,6 +86,7 @@ func main() {
 	web.SingletonWeb()
 
 	db.SingletonNodeBaseDB()
+	db.SingletonSubscriptionDB()
 	db.SingletonTaskDB()
 	process.SingletonProcess()
 

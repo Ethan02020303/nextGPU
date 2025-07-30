@@ -21,8 +21,6 @@ type (
 	}
 	Node struct {
 		SystemUUID   string `json:"systemUUID"`
-		Account      string `json:"account"`
-		OrgName      string `json:"orgName"`
 		NodeIP       string `json:"nodeIP"`
 		OS           string `json:"os"`
 		CPU          string `json:"cpu"`
@@ -153,11 +151,10 @@ type (
 		Credits   float64  `json:"credits"`
 		Workflows UseCount `json:"workflows"`
 		Storage   UseCount `json:"storage"`
-		Images    int      `json:"images"`
+		Images    UseCount `json:"images"`
 		Face      string   `json:"face"`
 		EMail     string   `json:"eMail"`
 	}
-
 	SelfSubTask struct {
 		ID                int    `json:"id"`
 		SubID             string `json:"subID"`
@@ -186,6 +183,36 @@ type (
 		OnlineTime int64  `json:"onlineTime"`
 		TasksCount int64  `json:"tasksCount"`
 	}
+	UserNode struct {
+		SystemUUID   string `json:"systemUUID"`
+		Account      string `json:"account"`
+		NodeIP       string `json:"nodeIP"`
+		OS           string `json:"os"`
+		CPU          string `json:"cpu"`
+		GPU          string `json:"gpu"`
+		GPUDriver    string `json:"gpuDriver"`
+		Memory       string `json:"memory"`
+		State        int64  `json:"state"`
+		RegisterTime string `json:"registerTime"`
+		EnrollTime   string `json:"enrollTime"`
+		HeartTime    string `json:"heartTime"`
+		OnlineTime   int64  `json:"onlineTime"`
+		Tasks        int64  `json:"tasks"`
+		GPUTime      int64  `json:"gpuTime"`
+		CurTasks     int64  `json:"curTasks"`
+	}
+	MyAllTask struct {
+		SubID             string `json:"subID"`
+		Status            int    `json:"status"`
+		PublishTime       string `json:"publishTime"`
+		StartTime         string `json:"startTime"`
+		EndTime           string `json:"endTime"`
+		Duration          int64  `json:"duration"`
+		EstimatedDuration int64  `json:"estimatedDuration"`
+		NodeIP            string `json:"nodeIP"`
+		SystemUUID        string `json:"systemUUID"`
+		GPUModel          string `json:"gpuModel"`
+	}
 )
 
 type NodeDB struct {
@@ -201,12 +228,8 @@ func (p *NodeDB) GPUs() (error, []GPU) {
 		log4plus.Error(errString)
 		return errors.New(errString), []GPU{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(a.f_id,-1), 
-       	IFNULL(a.f_scheduling_priority, -1),
-       	IFNULL(b.f_name, ''),
-       	IFNULL(b.f_weight, 0),
-    	IFNULL(b.f_pool_size, 0),
-        IFNULL(b.f_gb_vram, 0)
+	sql := fmt.Sprintf(`select IFNULL(a.f_id,-1), IFNULL(a.f_scheduling_priority, -1), IFNULL(b.f_name, ''),
+       	IFNULL(b.f_weight, 0), IFNULL(b.f_pool_size, 0), IFNULL(b.f_gb_vram, 0)
        	from t_available_gpu as a, t_gpu_family as b where a.f_gpu_model = b.f_name;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
@@ -220,7 +243,8 @@ func (p *NodeDB) GPUs() (error, []GPU) {
 	for rows.Next() {
 		var tmpId int64
 		var gpu GPU
-		scanErr := rows.Scan(&tmpId, &gpu.SchedulingPriority, &gpu.GPUName, &gpu.Weight, &gpu.PoolSize, &gpu.VideoRAM)
+		scanErr := rows.Scan(&tmpId, &gpu.SchedulingPriority, &gpu.GPUName,
+			&gpu.Weight, &gpu.PoolSize, &gpu.VideoRAM)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -239,24 +263,10 @@ func (p *NodeDB) Node(systemUUID string) (error, Node) {
 		log4plus.Error(errString)
 		return errors.New(errString), Node{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_system_uuid, ''),
-       	IFNULL(f_account, ''),
-       	IFNULL(f_org_name, ''),
-    	IFNULL(f_node_ip, ''),
-        IFNULL(f_os, ''),
-        IFNULL(f_cpu, ''),
-        IFNULL(f_gpu, ''),
-        IFNULL(f_gpu_driver, ''),
-        IFNULL(f_memory, -1),
-        IFNULL(f_state, 0),
-        IFNULL(f_node_name, ''),
-        IFNULL(f_register_time, ''),
-        IFNULL(f_enroll_time, ''),
-        IFNULL(f_heart_time, ''),
-        IFNULL(f_versions, ''),
-         IFNULL(f_measure_time, '')
-       	from t_nodes where f_system_uuid='%s';`, systemUUID)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_system_uuid, ''), IFNULL(f_node_ip, ''),
+        IFNULL(f_os, ''), IFNULL(f_cpu, ''), IFNULL(f_gpu, ''), IFNULL(f_gpu_driver, ''), IFNULL(f_memory, -1),
+        IFNULL(f_state, 0), IFNULL(f_node_name, ''), IFNULL(f_register_time, ''), IFNULL(f_enroll_time, ''),
+        IFNULL(f_heart_time, ''), IFNULL(f_versions, ''), IFNULL(f_measure_time, '') from t_nodes where f_system_uuid='%s';`, systemUUID)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -268,23 +278,10 @@ func (p *NodeDB) Node(systemUUID string) (error, Node) {
 	for rows.Next() {
 		var tmpId int64
 		var node Node
-		scanErr := rows.Scan(&tmpId,
-			&node.SystemUUID,
-			&node.Account,
-			&node.OrgName,
-			&node.NodeIP,
-			&node.OS,
-			&node.CPU,
-			&node.GPU,
-			&node.GPUDriver,
-			&node.Memory,
-			&node.State,
-			&node.NodeName,
-			&node.RegisterTime,
-			&node.EnrollTime,
-			&node.HeartTime,
-			&node.Versions,
-			&node.MeasureTime)
+		scanErr := rows.Scan(&tmpId, &node.SystemUUID, &node.NodeIP,
+			&node.OS, &node.CPU, &node.GPU, &node.GPUDriver, &node.Memory,
+			&node.State, &node.NodeName, &node.RegisterTime, &node.EnrollTime,
+			&node.HeartTime, &node.Versions, &node.MeasureTime)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -303,24 +300,10 @@ func (p *NodeDB) Nodes() (error, []Node) {
 		log4plus.Error(errString)
 		return errors.New(errString), []Node{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_system_uuid, ''),
-       	IFNULL(f_account, ''),
-       	IFNULL(f_org_name, ''),
-    	IFNULL(f_node_ip, ''),
-        IFNULL(f_os, ''),
-        IFNULL(f_cpu, ''),
-        IFNULL(f_gpu, ''),
-        IFNULL(f_gpu_driver, ''),
-        IFNULL(f_memory, -1),
-        IFNULL(f_state, 0),
-        IFNULL(f_node_name, ''),
-        IFNULL(f_register_time, ''),
-        IFNULL(f_enroll_time, ''),
-        IFNULL(f_heart_time, ''),
-        IFNULL(f_versions, ''),
-         IFNULL(f_measure_time, '')
-       	from t_nodes;`)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_system_uuid, ''), IFNULL(f_node_ip, ''), IFNULL(f_os, ''),
+        IFNULL(f_cpu, ''), IFNULL(f_gpu, ''), IFNULL(f_gpu_driver, ''), IFNULL(f_memory, -1), IFNULL(f_state, 0),
+        IFNULL(f_node_name, ''), IFNULL(f_register_time, ''), IFNULL(f_enroll_time, ''), IFNULL(f_heart_time, ''),
+        IFNULL(f_versions, ''), IFNULL(f_measure_time, '') from t_nodes;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -333,23 +316,10 @@ func (p *NodeDB) Nodes() (error, []Node) {
 	for rows.Next() {
 		var tmpId int64
 		var node Node
-		scanErr := rows.Scan(&tmpId,
-			&node.SystemUUID,
-			&node.Account,
-			&node.OrgName,
-			&node.NodeIP,
-			&node.OS,
-			&node.CPU,
-			&node.GPU,
-			&node.GPUDriver,
-			&node.Memory,
-			&node.State,
-			&node.NodeName,
-			&node.RegisterTime,
-			&node.EnrollTime,
-			&node.HeartTime,
-			&node.Versions,
-			&node.MeasureTime)
+		scanErr := rows.Scan(&tmpId, &node.SystemUUID, &node.NodeIP, &node.OS,
+			&node.CPU, &node.GPU, &node.GPUDriver, &node.Memory, &node.State,
+			&node.NodeName, &node.RegisterTime, &node.EnrollTime, &node.HeartTime,
+			&node.Versions, &node.MeasureTime)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -368,13 +338,8 @@ func (p *NodeDB) Workflows() (error, []Workflow) {
 		log4plus.Error(errString)
 		return errors.New(errString), []Workflow{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_deleted, false),
-       	IFNULL(f_template, ''),
-       	IFNULL(f_configuration, ''),
-    	IFNULL(f_description, ''),
-        IFNULL(f_title, '')
-       	from t_workflows;`)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_deleted, false), IFNULL(f_template, ''),
+       	IFNULL(f_configuration, ''), IFNULL(f_description, ''), IFNULL(f_title, '')	from t_workflows;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -387,12 +352,8 @@ func (p *NodeDB) Workflows() (error, []Workflow) {
 	for rows.Next() {
 		var tmpId int64
 		var workflow Workflow
-		scanErr := rows.Scan(&tmpId,
-			&workflow.Deleted,
-			&workflow.Template,
-			&workflow.Configuration,
-			&workflow.Description,
-			&workflow.Title)
+		scanErr := rows.Scan(&tmpId, &workflow.Deleted, &workflow.Template,
+			&workflow.Configuration, &workflow.Description, &workflow.Title)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -411,13 +372,8 @@ func (p *NodeDB) Workflow(title string) (error, Workflow) {
 		log4plus.Error(errString)
 		return errors.New(errString), Workflow{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_deleted, false),
-       	IFNULL(f_template, ''),
-       	IFNULL(f_configuration, ''),
-    	IFNULL(f_description, ''),
-        IFNULL(f_title, '')
-       	from t_workflows where f_title='%s';`, title)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_deleted, false), IFNULL(f_template, ''),
+       	IFNULL(f_configuration, ''), IFNULL(f_description, ''), IFNULL(f_title, '') from t_workflows where f_title='%s';`, title)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -429,12 +385,8 @@ func (p *NodeDB) Workflow(title string) (error, Workflow) {
 	for rows.Next() {
 		var tmpId int64
 		var workflow Workflow
-		scanErr := rows.Scan(&tmpId,
-			&workflow.Deleted,
-			&workflow.Template,
-			&workflow.Configuration,
-			&workflow.Description,
-			&workflow.Title)
+		scanErr := rows.Scan(&tmpId, &workflow.Deleted, &workflow.Template,
+			&workflow.Configuration, &workflow.Description, &workflow.Title)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -476,21 +428,10 @@ func (p *NodeDB) NodeWorkflow(systemUUID string) (error, []WorkspaceWorkflow) {
 	var nodeWorkflowDB []WorkspaceWorkflow
 	for _, workSpaceID := range workSpaceIDs {
 		//workspace
-		sql = fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_major_cmd, ''),
-       IFNULL(f_minor_cmd, ''),
-       IFNULL(f_deploy_count, 0),
-       IFNULL(f_redundant_count, 0),
-       IFNULL(f_comfyui_http, ''),
-       IFNULL(f_comfyui_ws, ''),
-       IFNULL(f_deleted, false),
-       IFNULL(f_measure_title, ''),
-       IFNULL(f_measure, ''),
-       IFNULL(f_measure_configuration, ''),
-       IFNULL(f_run_mode, 0),
-       IFNULL(f_min_gb_vram, 0),
-       IFNULL(f_save_path, '')
-       from t_workspaces where f_workspace_id='%s';`, workSpaceID)
+		sql = fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_major_cmd, ''), IFNULL(f_minor_cmd, ''), IFNULL(f_deploy_count, 0),
+       		IFNULL(f_redundant_count, 0), IFNULL(f_comfyui_http, ''), IFNULL(f_comfyui_ws, ''), IFNULL(f_deleted, false),
+       		IFNULL(f_measure_title, ''), IFNULL(f_measure, ''), IFNULL(f_measure_configuration, ''), IFNULL(f_run_mode, 0),
+       		IFNULL(f_min_gb_vram, 0), IFNULL(f_save_path, '') from t_workspaces where f_workspace_id='%s';`, workSpaceID)
 		rowSelect, errSelect := p.mysqlDb.Mysqldb.Query(sql)
 		if errSelect != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errSelect.Error(), sql)
@@ -514,12 +455,8 @@ func (p *NodeDB) NodeWorkflow(systemUUID string) (error, []WorkspaceWorkflow) {
 			workSpace.WorkspaceID = workSpaceID
 
 			//workflow
-			sql = fmt.Sprintf(`select IFNULL(b.f_id,-1), 
-			   IFNULL(b.f_deleted, false),
-			   IFNULL(b.f_template, ''),
-			   IFNULL(b.f_configuration, ''),
-			   IFNULL(b.f_description, ''),
-			   IFNULL(b.f_title, '')
+			sql = fmt.Sprintf(`select IFNULL(b.f_id,-1), IFNULL(b.f_deleted, false), IFNULL(b.f_template, ''),
+			   IFNULL(b.f_configuration, ''), IFNULL(b.f_description, ''), IFNULL(b.f_title, '')
 			   from t_workspace_workflow as a, t_workflows as b where a.f_title=b.f_title and a.f_workspace_id='%s';`, workSpaceID)
 			rowSelect2, errSelect2 := p.mysqlDb.Mysqldb.Query(sql)
 			if errSelect2 != nil {
@@ -532,8 +469,8 @@ func (p *NodeDB) NodeWorkflow(systemUUID string) (error, []WorkspaceWorkflow) {
 			for rowSelect2.Next() {
 				var tmpId int64
 				var workflow Workflow
-				scanErrSelect2 := rowSelect2.Scan(&tmpId, &workflow.Deleted, &workflow.Template, &workflow.Configuration,
-					&workflow.Description, &workflow.Title)
+				scanErrSelect2 := rowSelect2.Scan(&tmpId, &workflow.Deleted, &workflow.Template,
+					&workflow.Configuration, &workflow.Description, &workflow.Title)
 				if scanErrSelect2 != nil {
 					log4plus.Error("%s Scan Error=[%s]", funName, scanErrSelect2.Error())
 					continue
@@ -575,21 +512,10 @@ func (p *NodeDB) NodeWorkflows() (error, []NodeWorkflowDB) {
 		var nodeWorkflowDB NodeWorkflowDB
 		nodeWorkflowDB.SystemUUID = systemUUID
 		var workspaceWorkflow WorkspaceWorkflow
-		sql = fmt.Sprintf(`select IFNULL(f_id,-1), 
-			   IFNULL(f_major_cmd, ''),
-			   IFNULL(f_minor_cmd, ''),
-			   IFNULL(f_deploy_count, 0),
-			   IFNULL(f_redundant_count, 0),
-			   IFNULL(f_comfyui_http, ''),
-			   IFNULL(f_comfyui_ws, ''),
-			   IFNULL(f_deleted, false),
-			   IFNULL(f_measure_title, ''),
-			   IFNULL(f_measure, ''),
-			   IFNULL(f_measure_configuration, ''),
-			   IFNULL(f_run_mode, 0),
-			   IFNULL(f_min_gb_vram, 0),
-			   IFNULL(f_save_path, '')
-       			from t_workspaces where f_workspace_id='%s';`, workSpaceID)
+		sql = fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_major_cmd, ''), IFNULL(f_minor_cmd, ''), IFNULL(f_deploy_count, 0),
+			   IFNULL(f_redundant_count, 0), IFNULL(f_comfyui_http, ''), IFNULL(f_comfyui_ws, ''), IFNULL(f_deleted, false),
+			   IFNULL(f_measure_title, ''), IFNULL(f_measure, ''), IFNULL(f_measure_configuration, ''), IFNULL(f_run_mode, 0),
+			   IFNULL(f_min_gb_vram, 0), IFNULL(f_save_path, '') from t_workspaces where f_workspace_id='%s';`, workSpaceID)
 		rowSelect, errSelect := p.mysqlDb.Mysqldb.Query(sql)
 		if errSelect != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errSelect.Error(), sql)
@@ -612,12 +538,8 @@ func (p *NodeDB) NodeWorkflows() (error, []NodeWorkflowDB) {
 			}
 
 			//workflow
-			sql = fmt.Sprintf(`select IFNULL(b.f_id,-1), 
-			   IFNULL(b.f_deleted, false),
-			   IFNULL(b.f_template, ''),
-			   IFNULL(b.f_configuration, ''),
-			   IFNULL(b.f_description, ''),
-			   IFNULL(b.f_title, '')
+			sql = fmt.Sprintf(`select IFNULL(b.f_id,-1), IFNULL(b.f_deleted, false), IFNULL(b.f_template, ''), IFNULL(b.f_configuration, ''), 
+       			IFNULL(b.f_description, ''), IFNULL(b.f_title, '')
 			   from t_workspace_workflow as a, t_workflows as b where a.f_title=b.f_title and a.f_workspace_id='%s';`, workSpaceID)
 			rowSelect3, errSelect3 := p.mysqlDb.Mysqldb.Query(sql)
 			if errSelect3 != nil {
@@ -630,7 +552,8 @@ func (p *NodeDB) NodeWorkflows() (error, []NodeWorkflowDB) {
 			for rowSelect3.Next() {
 				var tmpId3 int64
 				var workflow Workflow
-				scanErr3 := rowSelect3.Scan(&tmpId3, &workflow.Deleted, &workflow.Template, &workflow.Configuration, &workflow.Description, &workflow.Title)
+				scanErr3 := rowSelect3.Scan(&tmpId3, &workflow.Deleted, &workflow.Template, &workflow.Configuration,
+					&workflow.Description, &workflow.Title)
 				if scanErr3 != nil {
 					log4plus.Error("%s Scan Error=[%s]", funName, scanErr3.Error())
 					continue
@@ -689,25 +612,10 @@ func (p *NodeDB) Task(taskID string) (error, MainTask) {
 		//mainTask.GeneratedData = marshalIndent(mainTask.GeneratedData)
 
 		//subTask
-		sql = fmt.Sprintf(`select IFNULL(f_id, 0),
-       IFNULL(f_sub_id, ''),
-       IFNULL(f_start_time, ''),
-       IFNULL(f_end_time, ''),
-       IFNULL(f_estimate_time, 0),
-       IFNULL(f_input, ''),
-       IFNULL(f_system_uuid, ''),
-       IFNULL(f_state, 0),
-       IFNULL(f_output, ''),
-       IFNULL(f_workspace_id, ''),
-       IFNULL(f_publish_time, ''),
-       IFNULL(f_urls, ''),
-       IFNULL(f_oss_duration, ''),
-       IFNULL(f_oss_size, ''),
-       IFNULL(f_inference_duration, 0),
-       IFNULL(f_create_time, ''),
-       IFNULL(f_retry_count, 0),
-       IFNULL(f_error_nodes, ''),
-       IFNULL(f_delete, 0),
+		sql = fmt.Sprintf(`select IFNULL(f_id, 0), IFNULL(f_sub_id, ''), IFNULL(f_start_time, ''), IFNULL(f_end_time, ''),
+       IFNULL(f_estimate_time, 0), IFNULL(f_input, ''), IFNULL(f_system_uuid, ''), IFNULL(f_state, 0), IFNULL(f_output, ''),
+       IFNULL(f_workspace_id, ''), IFNULL(f_publish_time, ''), IFNULL(f_urls, ''), IFNULL(f_oss_duration, ''), IFNULL(f_oss_size, ''),
+       IFNULL(f_inference_duration, 0), IFNULL(f_create_time, ''), IFNULL(f_retry_count, 0), IFNULL(f_error_nodes, ''), IFNULL(f_delete, 0),
        IFNULL(f_failure_reason, '') from t_sub_jobs where f_task_id='%s';`, taskID)
 		rowSelect2, errSelect2 := p.mysqlDb.Mysqldb.Query(sql)
 		if errSelect2 != nil {
@@ -720,10 +628,11 @@ func (p *NodeDB) Task(taskID string) (error, MainTask) {
 		for rowSelect2.Next() {
 			var tmpId2 int64
 			var subTask SubTask
-			scanErrSelect2 := rowSelect2.Scan(&tmpId2, &subTask.SubID, &subTask.StartTime, &subTask.EndTime, &subTask.EstimateTime,
-				&subTask.Input, &subTask.SystemUUID, &subTask.State, &subTask.Output, &subTask.WorkspaceID, &subTask.PublishTime,
-				&subTask.Urls, &subTask.OSSDuration, &subTask.OSSSize, &subTask.InferenceDuration, &subTask.CreateTime,
-				&subTask.RetryCount, &subTask.ErrorNodes, &subTask.Delete, &subTask.FailureReason)
+			scanErrSelect2 := rowSelect2.Scan(&tmpId2, &subTask.SubID, &subTask.StartTime, &subTask.EndTime,
+				&subTask.EstimateTime, &subTask.Input, &subTask.SystemUUID, &subTask.State, &subTask.Output,
+				&subTask.WorkspaceID, &subTask.PublishTime, &subTask.Urls, &subTask.OSSDuration, &subTask.OSSSize,
+				&subTask.InferenceDuration, &subTask.CreateTime, &subTask.RetryCount, &subTask.ErrorNodes, &subTask.Delete,
+				&subTask.FailureReason)
 			if scanErrSelect2 != nil {
 				log4plus.Error("%s Scan Error=[%s]", funName, scanErrSelect2.Error())
 				continue
@@ -741,16 +650,9 @@ func (p *NodeDB) Models() (error, []Model) {
 		log4plus.Error(errString)
 		return errors.New(errString), []Model{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_workflow_title,''), 
-       IFNULL(f_workflow_cover,''), 
-       IFNULL(f_badge,0), 
-       IFNULL(f_author_name,''), 
-       IFNULL(f_download_count,0), 
-       IFNULL(f_like_count,0), 
-       IFNULL(f_comment_count, 0),  
-       IFNULL(f_model, ''), 
-       IFNULL(f_group,'') from t_workflow_base order by f_id desc;`)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_workflow_title,''), IFNULL(f_workflow_cover,''), IFNULL(f_badge,0), 
+       IFNULL(f_author_name,''), IFNULL(f_download_count,0), IFNULL(f_like_count,0), IFNULL(f_comment_count, 0),  
+       IFNULL(f_model, ''), IFNULL(f_group,'') from t_workflow_base order by f_badge;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -763,16 +665,9 @@ func (p *NodeDB) Models() (error, []Model) {
 	for rows.Next() {
 		model := Model{}
 		var tmpId int
-		scanErr := rows.Scan(&tmpId,
-			&model.WorkflowTitle,
-			&model.WorkflowCover,
-			&model.Badge,
-			&model.AuthorName,
-			&model.DownloadCount,
-			&model.LikeCount,
-			&model.CommentCount,
-			&model.Model,
-			&model.Group)
+		scanErr := rows.Scan(&tmpId, &model.WorkflowTitle, &model.WorkflowCover, &model.Badge,
+			&model.AuthorName, &model.DownloadCount, &model.LikeCount, &model.CommentCount,
+			&model.Model, &model.Group)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -821,16 +716,9 @@ func (p *NodeDB) Categorie(categorieName string) (error, []Model) {
 		log4plus.Error(errString)
 		return errors.New(errString), []Model{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_workflow_title,''), 
-       IFNULL(f_workflow_cover,''), 
-       IFNULL(f_badge,0), 
-       IFNULL(f_author_name,''), 
-       IFNULL(f_download_count,0), 
-       IFNULL(f_like_count,0), 
-       IFNULL(f_comment_count, 0),  
-       IFNULL(f_model, ''), 
-       IFNULL(f_group,'') from t_workflow_base where f_model='%s' order by f_id desc;`, categorieName)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_workflow_title,''), IFNULL(f_workflow_cover,''), IFNULL(f_badge,0), 
+       IFNULL(f_author_name,''), IFNULL(f_download_count,0), IFNULL(f_like_count,0), IFNULL(f_comment_count, 0),  
+       IFNULL(f_model, ''), IFNULL(f_group,'') from t_workflow_base where f_model='%s' order by f_badge;`, categorieName)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -843,16 +731,9 @@ func (p *NodeDB) Categorie(categorieName string) (error, []Model) {
 	for rows.Next() {
 		model := Model{}
 		var tmpId int
-		scanErr := rows.Scan(&tmpId,
-			&model.WorkflowTitle,
-			&model.WorkflowCover,
-			&model.Badge,
-			&model.AuthorName,
-			&model.DownloadCount,
-			&model.LikeCount,
-			&model.CommentCount,
-			&model.Model,
-			&model.Group)
+		scanErr := rows.Scan(&tmpId, &model.WorkflowTitle, &model.WorkflowCover, &model.Badge,
+			&model.AuthorName, &model.DownloadCount, &model.LikeCount, &model.CommentCount,
+			&model.Model, &model.Group)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -901,20 +782,10 @@ func (p *NodeDB) WorkflowBase(title string) (error, WorkflowBase) {
 		log4plus.Error(errString)
 		return errors.New(errString), WorkflowBase{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(a.f_id,-1), 
-       	IFNULL(a.f_deleted, false),
-       	IFNULL(a.f_template, ''),
-       	IFNULL(a.f_configuration, ''),
-    	IFNULL(a.f_description, ''),    	
-    	IFNULL(b.f_workflow_cover, ''),
-    	IFNULL(b.f_badge, 0),
-    	IFNULL(b.f_author_name, ''),
-    	IFNULL(b.f_download_count, 0),
-    	IFNULL(b.f_like_count, 0),
-    	IFNULL(b.f_comment_count, 0),
-    	IFNULL(b.f_model, ''),
-        IFNULL(a.f_title, '')
-       	from t_workflows as a, t_workflow_base as b where a.f_title=b.f_workflow_title and a.f_title='%s';`, title)
+	sql := fmt.Sprintf(`select IFNULL(a.f_id,-1), IFNULL(a.f_deleted, false), IFNULL(a.f_template, ''), IFNULL(a.f_configuration, ''),
+    	IFNULL(a.f_description, ''), IFNULL(b.f_workflow_cover, ''), IFNULL(b.f_badge, 0), IFNULL(b.f_author_name, ''),
+    	IFNULL(b.f_download_count, 0), IFNULL(b.f_like_count, 0), IFNULL(b.f_comment_count, 0), IFNULL(b.f_model, ''),
+        IFNULL(a.f_title, '') from t_workflows as a, t_workflow_base as b where a.f_title=b.f_workflow_title and a.f_title='%s';`, title)
 	log4plus.Info(sql)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
@@ -927,18 +798,9 @@ func (p *NodeDB) WorkflowBase(title string) (error, WorkflowBase) {
 	for rows.Next() {
 		var tmpId int64
 		var workflow WorkflowBase
-		scanErr := rows.Scan(&tmpId,
-			&workflow.Deleted,
-			&workflow.Template,
-			&workflow.Configuration,
-			&workflow.Description,
-			&workflow.Cover,
-			&workflow.Badge,
-			&workflow.AuthorName,
-			&workflow.DownloadCount,
-			&workflow.LikeCount,
-			&workflow.CommentCount,
-			&workflow.Model,
+		scanErr := rows.Scan(&tmpId, &workflow.Deleted, &workflow.Template, &workflow.Configuration,
+			&workflow.Description, &workflow.Cover, &workflow.Badge, &workflow.AuthorName,
+			&workflow.DownloadCount, &workflow.LikeCount, &workflow.CommentCount, &workflow.Model,
 			&workflow.Title)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
@@ -958,12 +820,8 @@ func (p *NodeDB) UserBase(userName string) (error, UserBase) {
 		log4plus.Error(errString)
 		return errors.New(errString), UserBase{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_user_name, ''),
-       	IFNULL(f_cost, 0),
-       	IFNULL(f_level, 0),
-    	IFNULL(f_face, '')
-       	from t_users where f_user_name='%s';`, userName)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_user_name, ''), IFNULL(f_cost, 0), IFNULL(f_level, 0),
+    	IFNULL(f_face, '') from t_users where f_user_name='%s';`, userName)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -975,24 +833,69 @@ func (p *NodeDB) UserBase(userName string) (error, UserBase) {
 	for rows.Next() {
 		var tmpId int64
 		var userBase UserBase
-		scanErr := rows.Scan(&tmpId,
-			&userBase.UserName,
-			&userBase.Credits,
-			&userBase.Level,
-			&userBase.Face)
+		scanErr := rows.Scan(&tmpId, &userBase.UserName, &userBase.Credits, &userBase.Level, &userBase.Face)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
 		}
-		if tmpId != -1 {
-			userBase.Workflows.Used = 16
-			userBase.Workflows.Total = 20
-			userBase.Storage.Used = 1024 * 1024 * 34
-			userBase.Storage.Total = 2048 * 1024 * 1024
-			return nil, userBase
+		// level config
+		sql = fmt.Sprintf(`select IFNULL(f_workflow, 0), IFNULL(f_image, 0), IFNULL(f_storage, 0) from t_levels where f_level=%d;`, userBase.Level)
+		rowsLevel, errLevel := p.mysqlDb.Mysqldb.Query(sql)
+		if errLevel != nil {
+			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errLevel.Error(), sql)
+			log4plus.Error(errString)
+			return errors.New(errString), UserBase{}
 		}
+		defer rowsLevel.Close()
+
+		for rowsLevel.Next() {
+			scanImageNumErr := rowsLevel.Scan(&userBase.Workflows.Total, &userBase.Images.Total, &userBase.Storage.Total)
+			if scanImageNumErr != nil {
+				log4plus.Error("%s Scan Error=[%s]", funName, scanImageNumErr.Error())
+				continue
+			}
+		}
+		// image count
+		sql = fmt.Sprintf(`select IFNULL(count(b.f_id),0) from t_user_job as a, t_sub_jobs as b where a.f_task_id = b.f_task_id and a.f_user_name='%s';`,
+			userName)
+		rowsImageNum, errImageNum := p.mysqlDb.Mysqldb.Query(sql)
+		if errImageNum != nil {
+			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errImageNum.Error(), sql)
+			log4plus.Error(errString)
+			return errors.New(errString), UserBase{}
+		}
+		defer rowsImageNum.Close()
+
+		for rowsImageNum.Next() {
+			scanImageNumErr := rowsImageNum.Scan(&userBase.Images.Used)
+			if scanImageNumErr != nil {
+				log4plus.Error("%s Scan Error=[%s]", funName, scanImageNumErr.Error())
+				continue
+			}
+		}
+		//image size
+		sql = fmt.Sprintf(`select IFNULL(sum(b.f_oss_size), 0) from t_user_job as a, t_sub_jobs as b where a.f_task_id = b.f_task_id and a.f_user_name='%s';`,
+			userName)
+		rowsImageSize, errImageSize := p.mysqlDb.Mysqldb.Query(sql)
+		if errImageSize != nil {
+			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errImageSize.Error(), sql)
+			log4plus.Error(errString)
+			return errors.New(errString), UserBase{}
+		}
+		defer rowsImageSize.Close()
+
+		for rowsImageSize.Next() {
+			var imageSize float64
+			scanImageSizeErr := rowsImageSize.Scan(&imageSize)
+			if scanImageSizeErr != nil {
+				log4plus.Error("%s Scan Error=[%s]", funName, scanImageSizeErr.Error())
+				continue
+			}
+			userBase.Storage.Used = int(imageSize)
+		}
+		return nil, userBase
 	}
-	return errors.New("not found Workflow"), UserBase{}
+	return errors.New("not found user"), UserBase{}
 }
 
 func (p *NodeDB) MyTask(userName string) (error, []SelfTask) {
@@ -1026,13 +929,8 @@ func (p *NodeDB) MyTask(userName string) (error, []SelfTask) {
 	var mainTask []SelfTask
 	for _, taskID := range tasks {
 		//主任务
-		sql = fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_task_id, ''), 
-       IFNULL(f_start_time, ''), 
-       IFNULL(f_completion_time, ''), 
-       IFNULL(f_title, ''),
-       IFNULL(f_input, ''),
-       IFNULL(f_sub_num, 0) from t_jobs where f_task_id='%s' order by f_id desc;`, taskID)
+		sql = fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_task_id, ''), IFNULL(f_start_time, ''), IFNULL(f_completion_time, ''), 
+       IFNULL(f_title, ''), IFNULL(f_input, ''), IFNULL(f_sub_num, 0) from t_jobs where f_task_id='%s' order by f_id desc;`, taskID)
 		rows, err = p.mysqlDb.Mysqldb.Query(sql)
 		if err != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1049,16 +947,10 @@ func (p *NodeDB) MyTask(userName string) (error, []SelfTask) {
 				continue
 			}
 		}
-
 		//子任务
-		sql = fmt.Sprintf(`select IFNULL(f_id,-1), 
-       IFNULL(f_sub_id, ''), 
-       IFNULL(f_start_time, ''), 
-       IFNULL(f_end_time, ''), 
-       IFNULL(f_system_uuid, ''),
-       IFNULL(f_urls, ''),
-       IFNULL(f_oss_size, 0),
-       IFNULL(f_inference_duration, 0) from t_sub_jobs where f_task_id='%s' order by f_id desc;`, taskID)
+		sql = fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_sub_id, ''), IFNULL(f_start_time, ''), IFNULL(f_end_time, ''), IFNULL(f_system_uuid, ''), 
+       		IFNULL(f_urls, ''), IFNULL(f_oss_size, 0), IFNULL(f_inference_duration, 0) 
+			from t_sub_jobs where f_task_id='%s' order by f_id desc;`, taskID)
 		rows, err = p.mysqlDb.Mysqldb.Query(sql)
 		if err != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1092,7 +984,7 @@ func (p *NodeDB) TaskCount() (error, int64) {
 		log4plus.Error(errString)
 		return errors.New(errString), 0
 	}
-	sql := fmt.Sprintf(`select Count(f_id) from t_sub_jobs;`)
+	sql := fmt.Sprintf(`select IFNULL(count(f_id),0) from t_sub_jobs;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1120,7 +1012,7 @@ func (p *NodeDB) NodeCount() (error, int64) {
 		log4plus.Error(errString)
 		return errors.New(errString), 0
 	}
-	sql := fmt.Sprintf(`select Count(f_id) from t_nodes;`)
+	sql := fmt.Sprintf(`select IFNULL(count(f_id),0) from t_nodes;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1160,12 +1052,8 @@ func (p *NodeDB) CurNodes() (error, []CurrentNode) {
 		log4plus.Error(errString)
 		return errors.New(errString), []CurrentNode{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_system_uuid, ''),
-    	IFNULL(f_node_ip, ''),
-        IFNULL(f_gpu, ''),
-        IFNULL(f_gpu_driver, ''),
-        IFNULL(f_memory, -1) from t_nodes order by f_heart_time desc limit 5;`)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_system_uuid, ''), IFNULL(f_node_ip, ''), IFNULL(f_gpu, ''),
+        IFNULL(f_gpu_driver, ''), IFNULL(f_memory, -1) from t_nodes order by f_heart_time desc limit 5;`)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1178,12 +1066,8 @@ func (p *NodeDB) CurNodes() (error, []CurrentNode) {
 	for rows.Next() {
 		var tmpId, tmpMemory int64
 		var node CurrentNode
-		scanErr := rows.Scan(&tmpId,
-			&node.SystemUUID,
-			&node.NodeIP,
-			&node.GPU,
-			&node.GPUDriver,
-			&tmpMemory)
+		scanErr := rows.Scan(&tmpId, &node.SystemUUID, &node.NodeIP, &node.GPU,
+			&node.GPUDriver, &tmpMemory)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -1191,9 +1075,8 @@ func (p *NodeDB) CurNodes() (error, []CurrentNode) {
 		//GPU Info
 		node.GPU = getGPU(node.GPU)
 		node.Memory = tmpMemory / (1024 * 1024 * 1024)
-
 		//得到当前在线时长
-		sql = fmt.Sprintf(`select sum(f_hour) as hourNum  from t_node_online_time;`)
+		sql = fmt.Sprintf(`select IFNULL(sum(f_hour), 0) as hourNum  from t_node_online_time;`)
 		rowsTime, errTime := p.mysqlDb.Mysqldb.Query(sql)
 		if errTime != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errTime.Error(), sql)
@@ -1208,9 +1091,8 @@ func (p *NodeDB) CurNodes() (error, []CurrentNode) {
 				continue
 			}
 		}
-
 		//得到当前在线时长
-		sql = fmt.Sprintf(`select count(f_id) as taskNum  from t_sub_jobs where f_system_uuid='%s';`, node.SystemUUID)
+		sql = fmt.Sprintf(`select IFNULL(count(f_id), 0)  from t_sub_jobs where f_system_uuid='%s';`, node.SystemUUID)
 		rowsTaskCount, errTaskCount := p.mysqlDb.Mysqldb.Query(sql)
 		if errTaskCount != nil {
 			errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, errTaskCount.Error(), sql)
@@ -1247,7 +1129,6 @@ func (p *NodeDB) Register(userName, eMail, password string) (error, bool, string
 		return errors.New(errString), false, ""
 	}
 	defer rows.Close()
-
 	for rows.Next() {
 		var tmpId int64
 		scanErr := rows.Scan(&tmpId)
@@ -1259,8 +1140,9 @@ func (p *NodeDB) Register(userName, eMail, password string) (error, bool, string
 			return nil, false, "user already exists"
 		}
 	}
+	face := "https://www.nextgpu.net/images/mini_logo.png"
 	sql = fmt.Sprintf(`insert into t_users (f_user_name, f_email, f_password, f_cost, f_level, f_face) values 
-                                                        ('%s', '%s', '%s', 0, 0, 'http://54.238.152.179/images/mini_logo.png');`, userName, eMail, password)
+                                                        ('%s', '%s', '%s', 0, 0, '%s');`, userName, eMail, password, face)
 	_, err = p.mysqlDb.Mysqldb.Exec(sql)
 	if err != nil {
 		log4plus.Error("%s insert Failed err=[%s] userName=[%s] eMail=[%s] password=[%s]", funName, err.Error(), userName, eMail, password)
@@ -1276,13 +1158,8 @@ func (p *NodeDB) Login(userName, password string) (error, UserBase) {
 		log4plus.Error(errString)
 		return errors.New(errString), UserBase{}
 	}
-	sql := fmt.Sprintf(`select IFNULL(f_id,-1), 
-       	IFNULL(f_user_name, ''),
-       	IFNULL(f_cost, 0),
-       	IFNULL(f_level, 0),
-    	IFNULL(f_face, ''),
-    	IFNULL(f_email, ''),
-    	IFNULL(f_password, '') from t_users where f_user_name='%s';`, userName)
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_user_name, ''),IFNULL(f_cost, 0),IFNULL(f_level, 0),
+       IFNULL(f_face, ''),IFNULL(f_email, ''), IFNULL(f_password, '') from t_users where f_user_name='%s';`, userName)
 	rows, err := p.mysqlDb.Mysqldb.Query(sql)
 	if err != nil {
 		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
@@ -1295,13 +1172,8 @@ func (p *NodeDB) Login(userName, password string) (error, UserBase) {
 		var tmpId int64
 		var tmpPassword string
 		var userBase UserBase
-		scanErr := rows.Scan(&tmpId,
-			&userBase.UserName,
-			&userBase.Credits,
-			&userBase.Level,
-			&userBase.Face,
-			&userBase.EMail,
-			&tmpPassword)
+		scanErr := rows.Scan(&tmpId, &userBase.UserName, &userBase.Credits, &userBase.Level,
+			&userBase.Face, &userBase.EMail, &tmpPassword)
 		if scanErr != nil {
 			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
 			continue
@@ -1318,6 +1190,212 @@ func (p *NodeDB) Login(userName, password string) (error, UserBase) {
 		}
 	}
 	return errors.New("not found Workflow"), UserBase{}
+}
+
+func (p *NodeDB) SSOLogin(userName string) (error, UserBase) {
+	funName := "SSOLogin"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect ---->>>>", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), UserBase{}
+	}
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_user_name, ''),IFNULL(f_cost, 0),IFNULL(f_level, 0),
+       IFNULL(f_face, ''),IFNULL(f_email, ''), IFNULL(f_password, '') from t_users where f_user_name='%s';`, userName)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return errors.New(errString), UserBase{}
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var tmpId int64
+		var tmpPassword string
+		var userBase UserBase
+		scanErr := rows.Scan(&tmpId, &userBase.UserName, &userBase.Credits, &userBase.Level,
+			&userBase.Face, &userBase.EMail, &tmpPassword)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		if tmpId != -1 {
+			userBase.Workflows.Used = 16
+			userBase.Workflows.Total = 20
+			userBase.Storage.Used = 1024 * 1024 * 34
+			userBase.Storage.Total = 2048 * 1024 * 1024
+			return nil, userBase
+		}
+	}
+	return errors.New("not found userName"), UserBase{}
+}
+
+func (p *NodeDB) inferenceDuration(systemUUID string) (error, int64) {
+	funName := "inferenceDuration"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect ---->>>>", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	sql := fmt.Sprintf(`select IFNULL(SUM(f_inference_duration), 0) from t_sub_jobs where f_system_uuid='%s';`, systemUUID)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var duration int64
+		scanErr := rows.Scan(&duration)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		return nil, duration
+	}
+	return errors.New(""), 0
+}
+
+func (p *NodeDB) gpuTasks(systemUUID string) (error, int64) {
+	funName := "gpuTasks"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect ---->>>>", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	sql := fmt.Sprintf(`select IFNULL(count(f_sub_id), 0) from t_sub_jobs where f_system_uuid='%s';`, systemUUID)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var taskCount int64
+		scanErr := rows.Scan(&taskCount)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		return nil, taskCount
+	}
+	return errors.New(""), 0
+}
+
+func (p *NodeDB) gpuOnline(systemUUID string) (error, int64) {
+	funName := "gpuOnline"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect ---->>>>", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	sql := fmt.Sprintf(`select IFNULL(sum(f_online_time), 0) from t_node_online_time where f_system_uuid='%s';`, systemUUID)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return errors.New(errString), 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var onlineTime int64
+		scanErr := rows.Scan(&onlineTime)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		return nil, onlineTime
+	}
+	return errors.New(""), 0
+}
+
+func (p *NodeDB) UserNodes(userName string) (error, []UserNode) {
+	funName := "UserNodes"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect ---->>>>", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), []UserNode{}
+	}
+	sql := fmt.Sprintf(`select IFNULL(f_id,-1), IFNULL(f_system_uuid, ''), IFNULL(f_node_ip, ''), 
+       IFNULL(f_os, ''), IFNULL(f_cpu, ''), IFNULL(f_gpu, ''), IFNULL(f_gpu_driver, ''), IFNULL(f_memory, -1), 
+       IFNULL(f_state, 0), IFNULL(f_register_time, ''), IFNULL(f_enroll_time, '') 
+		from t_nodes where f_user_name='%s' order by f_state desc, f_enroll_time desc;`, userName)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return errors.New(errString), []UserNode{}
+	}
+	defer rows.Close()
+
+	var nodes []UserNode
+	for rows.Next() {
+		var tmpId int64
+		var node UserNode
+		scanErr := rows.Scan(&tmpId, &node.SystemUUID, &node.NodeIP,
+			&node.OS, &node.CPU, &node.GPU, &node.GPUDriver, &node.Memory,
+			&node.State, &node.RegisterTime, &node.EnrollTime)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		errInference, inference := p.inferenceDuration(node.SystemUUID)
+		if errInference == nil {
+			node.GPUTime = inference
+		}
+		errGPUTask, gpuTasksNum := p.gpuTasks(node.SystemUUID)
+		if errGPUTask == nil {
+			node.Tasks = gpuTasksNum
+		}
+		errOnlineTime, onlineTime := p.gpuOnline(node.SystemUUID)
+		if errOnlineTime == nil {
+			node.OnlineTime = onlineTime
+		}
+		nodes = append(nodes, node)
+	}
+	return nil, nodes
+}
+
+func (p *NodeDB) MyAllTasks(userName string) (error, []MyAllTask) {
+	funName := "MyAllTasks"
+	if !p.mysqlDb.IsConnect() {
+		errString := fmt.Sprintf("%s Db Not Connect", funName)
+		log4plus.Error(errString)
+		return errors.New(errString), []MyAllTask{}
+	}
+	sql := fmt.Sprintf(`select IFNULL(a.f_id,-1), IFNULL(a.f_sub_id, ''), IFNULL(a.f_state, 0), IFNULL(a.f_publish_time, ''), 
+       IFNULL(a.f_start_time, ''), IFNULL(a.f_end_time, ''), IFNULL(a.f_inference_duration, 0), IFNULL(a.f_estimate_time, 0),
+       IFNULL(b.f_node_ip, ''), IFNULL(a.f_system_uuid, 0) from t_sub_jobs as a, t_nodes as b 
+                                where a.f_system_uuid=b.f_system_uuid AND b.f_user_name='%s' 
+                                  AND (a.f_sub_id NOT LIKE '00000000.%%' OR a.f_sub_id IS NULL) order by a.f_id desc;`, userName)
+	log4plus.Info("%s sql=[%s]", funName, sql)
+	rows, err := p.mysqlDb.Mysqldb.Query(sql)
+	if err != nil {
+		errString := fmt.Sprintf("%s Query Failed Error=[%s] SQL=[%s]", funName, err.Error(), sql)
+		log4plus.Error(errString)
+		return err, []MyAllTask{}
+	}
+	defer rows.Close()
+
+	var myAllTasks []MyAllTask
+	for rows.Next() {
+		var tmpId int
+		var task MyAllTask
+		scanErr := rows.Scan(&tmpId, &task.SubID, &task.Status, &task.PublishTime,
+			&task.StartTime, &task.EndTime, &task.Duration, &task.EstimatedDuration,
+			&task.NodeIP, &task.SystemUUID)
+		if scanErr != nil {
+			log4plus.Error("%s Scan Error=[%s]", funName, scanErr.Error())
+			continue
+		}
+		myAllTasks = append(myAllTasks, task)
+	}
+	return nil, myAllTasks
 }
 
 func SingletonNodeBaseDB() *NodeDB {
