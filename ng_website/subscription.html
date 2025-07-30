@@ -126,7 +126,7 @@
                 <h2 class="section-title">订阅中心</h2>
             </div>
             
-            <!--  -->
+            <!-- 订阅卡片 -->
             <div class="plans-container">
                 <!-- 基础档 -->
                 <div class="plan-card">
@@ -226,7 +226,7 @@
                 <div class="plan-card"  data-plan-id="intermediate">
                     <div class="plan-header">
                         <h3>中级会员</h3>
-                        <div class="plan-price">¥99</div>
+                        <div class="plan-price">¥39</div>
                         <div class="plan-price-info">每月100,000积分 ≈10,000张图</div>
                         <div class="plan-storage">60GB 存储空间</div>
                     </div>
@@ -276,10 +276,99 @@
                 </div>
             </div>
 
+            <!-- 价格对比 -->
+            <div class="price-comparison">
+                <div class="section-header">
+                    <h2 class="section-title">价格对比</h2>
+                </div>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>功能特性</th>
+                            <th>
+                                <div class="logo-text-container">
+                                    <img src="images/nextgpu-logo.png" alt="nextGPU Logo" class="platform-logo">
+                                    <span>nextGPU</span>
+                                </div>
+                                
+                            </th>
+                            <th>
+                                <div class="logo-text-container">
+                                    <img src="images/liblibai-logo.webp" alt="哩布哩布 Logo" class="platform-logo">
+                                    <span>哩布哩布</span>                             
+                                </div>
+                                
+                            </th>
+                            <th>
+                                <div class="logo-text-container">
+                                    <img src="images/midjourney-logo.webp" alt="Midjourney Logo" class="platform-logo">
+                                    <span>Midjourney</span>                      
+                                </div>
+                                
+                            </th>
+                            <th>
+                                <div class="logo-text-container">
+                                    <img src="images/keling-logo.webp" alt="可灵 Logo" class="platform-logo">
+                                    <span>可灵</span>                          
+                                </div>
+                                
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>生图单价</td>
+                            <td><span class="nextgpu-feature">￥0.0023</span></td>
+                            <td>￥0.015</td>
+                            <td>≈￥0.28</td>
+                            <td>￥0.018</td>
+                        </tr>
+                        <tr>
+                            <td>并发批次</td>
+                            <td><span class="nextgpu-feature">无限制</span></td>
+                            <td>2批次</td>
+                            <td>3批次</td>
+                            <td>1批次</td>
+                        </tr>
+                        <tr>
+                            <td>批次图片数</td>
+                            <td><span class="nextgpu-feature">20张</span></td>
+                            <td>4张</td>
+                            <td>4张</td>
+                            <td>4张</td>
+                        </tr>
+                        <tr>
+                            <td>社群支持</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="xmark">✗</span></td>
+                            <td><span class="xmark">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>多语言支持</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>最新LoRA</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="xmark">✗</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
 
             <!-- 修复后的FAQ部分 -->
             <div class="faq-section">
-                <h2 class="faq-header">常见问题</h2>
+                <div class="section-header">
+                    <h2 class="section-title">常见问题</h2>
+                </div>
                 
                 <div class="faq-container">
                     <div class="faq-item">
@@ -339,54 +428,59 @@
                 </div>
             </div>
 
+            
             <div id="paymentModal" class="payment-modal">
                 <div class="modal-content">
-                    <!-- 头部 -->
                     <div class="modal-header">
                         <h3 class="modal-title">订阅支付</h3>
                         <div class="close-modal" id="closeModal">&times;</div>
                     </div>
                     
-                    <!-- 支付方式标签 -->
                     <div class="payment-tabs">
                         <div class="tab-button active" data-tab="wechat">微信支付</div>
                         <div class="tab-button" data-tab="alipay">支付宝支付</div>
                     </div>
                     
-                    <!-- 内容区域 -->
                     <div class="qr-container" id="paymentContainer">
-                        <!-- 商品信息 -->
                         <div class="payment-info">
                             <div class="plan-name" id="planName">初级会员</div>
                             <div class="amount" id="paymentAmount">￥29.00</div>
                         </div>
                         
-                        <!-- 二维码区域 -->
-                        <div class="qr-code-container">
-                            <div id="qrcode"></div> <!-- 二维码将在这里渲染 -->
+                        <!-- 微信支付容器 -->
+                        <div class="qr-code-container" id="wechatQrContainer">
+                            <div id="qrcode"></div>
                             <div class="loader" id="qrLoader">
                                 <div class="spinner"></div>
                             </div>
                         </div>
                         
-                        <!-- 支付说明 -->
+                        <!-- 支付宝支付容器 -->
+                        <div class="alipay-iframe-container" id="alipayIframeContainer" style="display:none;">
+                            <iframe id="alipayIframe" frameborder="0" scrolling="no"></iframe>
+                            <div class="loader" id="alipayLoader">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                        
                         <div class="payment-instruction">
                             请使用 <span id="paymentApp">微信</span> 扫描上方二维码完成支付<br>
                             支付成功后，系统将自动更新您的订阅状态
                         </div>
                         
-                        <!-- 倒计时 -->
                         <div class="timer">
                             支付剩余时间: <span id="paymentTimer">05:00</span>
                         </div>
                     </div>
                     
-                    <!-- 新增支付失败提示UI​ -->
                     <div id="paymentStatusMessage" class="expiry-message" style="display:none;">
                         <p id="statusText"></p>
                     </div>
                 </div>
-            </div>           
+            </div>
+
+
+
         </div>
     </div>
     <script src="js/base.js"></script>

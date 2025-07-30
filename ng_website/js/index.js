@@ -6,7 +6,7 @@ const DOM_ELEMENTS = {
 
 async function fetchTaskCount() {
     try {
-        const response = await fetch(`${BASE_URL}/getTaskCount`, {
+        const response = await fetch(`${BASE_URL}/taskCount`, {
             method: 'GET',
         });
         const data = await response.json();
@@ -26,7 +26,7 @@ async function fetchTaskCount() {
 
 async function fetchNodeCount() {
     try {
-        const response = await fetch(`${BASE_URL}/getNodeCount`, {
+        const response = await fetch(`${BASE_URL}/nodeCount`, {
             method: 'GET',
         });
         const data = await response.json();
@@ -62,7 +62,7 @@ function retryLoading() {
 // 获取可用GPU节点
 async function fetchCurNodes() {
     try {
-        const response = await fetch(`${BASE_URL}/getCurNode`, {
+        const response = await fetch(`${BASE_URL}/availableNodes`, {
             method: 'GET',
         });
         const data = await response.json();

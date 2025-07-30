@@ -4,7 +4,7 @@ async function sendCategoryRequest(categoryName) {
         const requestData = {
             categoryName: categoryName,
         };
-        const response = await fetch(`${BASE_URL}/getCategorie`, {
+        const response = await fetch(`${BASE_URL}/categorie`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ async function sendCategoryRequest(categoryName) {
 // 获取分类数据的函数
 async function fetchCategories() {
     try {
-        const response = await fetch(`${BASE_URL}/getCategories`);
+        const response = await fetch(`${BASE_URL}/categories`);
         if (!response.ok) {
             throw new Error(`HTTP错误! 状态码: ${response.status}`);
         }
@@ -130,7 +130,7 @@ async function filterModelsByCategory(categoryName) {
 // 获取模型数据的函数
 async function fetchModels() {
     try {
-        const response = await fetch(`${BASE_URL}/getModels`);
+        const response = await fetch(`${BASE_URL}/models`);
         if (!response.ok) {
             throw new Error(`HTTP错误! 状态码: ${response.status}`);
         }

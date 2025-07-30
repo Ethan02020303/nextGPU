@@ -25,62 +25,64 @@ async function renderNodes(nodes) {
     
     try {
         // 为每个卡片数据项创建卡片
-        nodes.forEach((data, index) => {
-            // 克隆模板内容
-            const card = template.content.cloneNode(true);
-            
-            // 设置状态
-            const status = card.querySelector('.node-status');
-            status.textContent = data.state >= 3 ? '在线' : '离线';
-            status.className = 'node-status ' + (data.state >= 3 ? 'online' : 
-                                              data.ststateatus === '忙碌' ? 'busy' : 'offline');
-            
-            card.querySelector('.ip-highlight').textContent = data.nodeIP;
-            card.querySelector('.systemUUID').textContent = data.systemUUID;
-            
-            // 设置注册时间和最后上线时间
-            card.querySelector('.register-time .value').textContent = data.registerTime;
-            card.querySelector('.last-online .value').textContent = data.enrollTime;
-            
-            // 设置统计数据                      
-            card.querySelector('.runtime .value').innerHTML = 
-                `<span class="highlight-number">${formatNumber(data.onlineTime)}</span> <span class="unit">秒</span>`;
-            card.querySelector('.tasks .value').innerHTML = 
-                `<span class="highlight-number task-count">${data.tasks}</span>`;
-            card.querySelector('.gpu-time .value').innerHTML = 
-                `<span class="highlight-number">${formatNumber(data.gpuTime)}</span> <span class="unit">毫秒</span>`;
-            card.querySelector('.cur-queue .value').innerHTML = 
-                `<span class="highlight-number">${data.curTasks}</span>`;
+        if (nodes !== null) {
+            nodes.forEach((data, index) => {
+                // 克隆模板内容
+                const card = template.content.cloneNode(true);
+                
+                // 设置状态
+                const status = card.querySelector('.node-status');
+                status.textContent = data.state >= 3 ? '在线' : '离线';
+                status.className = 'node-status ' + (data.state >= 3 ? 'online' : 
+                                                data.ststateatus === '忙碌' ? 'busy' : 'offline');
+                
+                card.querySelector('.ip-highlight').textContent = data.nodeIP;
+                card.querySelector('.systemUUID').textContent = data.systemUUID;
+                
+                // 设置注册时间和最后上线时间
+                card.querySelector('.register-time .value').textContent = data.registerTime;
+                card.querySelector('.last-online .value').textContent = data.enrollTime;
+                
+                // 设置统计数据                      
+                card.querySelector('.runtime .value').innerHTML = 
+                    `<span class="highlight-number">${formatNumber(data.onlineTime)}</span> <span class="unit">秒</span>`;
+                card.querySelector('.tasks .value').innerHTML = 
+                    `<span class="highlight-number task-count">${data.tasks}</span>`;
+                card.querySelector('.gpu-time .value').innerHTML = 
+                    `<span class="highlight-number">${formatNumber(data.gpuTime)}</span> <span class="unit">毫秒</span>`;
+                card.querySelector('.cur-queue .value').innerHTML = 
+                    `<span class="highlight-number">${data.curTasks}</span>`;
 
-            if(data.os) {
-                const cleanOS = data.os.split('(')[0].trim();
-                card.querySelector('.os-version').innerHTML = 
-                    `<span class="blue-highlight">${cleanOS}</span>`;
-            } else {
-                card.querySelector('.os-version').textContent = '未知系统';
-            }
-            if(data.gpu) {
-                const gpuParts = data.gpu;
-                card.querySelector('.gpu-details').innerHTML = 
-                    `<span class="blue-highlight">${gpuParts}</span>`;
-            } else {
-                card.querySelector('.gpu-details').textContent = '未知类型';
-            }
+                if(data.os) {
+                    const cleanOS = data.os.split('(')[0].trim();
+                    card.querySelector('.os-version').innerHTML = 
+                        `<span class="blue-highlight">${cleanOS}</span>`;
+                } else {
+                    card.querySelector('.os-version').textContent = '未知系统';
+                }
+                if(data.gpu) {
+                    const gpuParts = data.gpu;
+                    card.querySelector('.gpu-details').innerHTML = 
+                        `<span class="blue-highlight">${gpuParts}</span>`;
+                } else {
+                    card.querySelector('.gpu-details').textContent = '未知类型';
+                }
 
-            // 设置状态徽章
-            const recommended = card.querySelector('.recommended');
-            recommended.style.display = 'none';
-            
-            // 设置卡片出现动画
-            const cardEl = card.querySelector('.github-card');
-            setTimeout(() => {
-                cardEl.style.opacity = '1';
-                cardEl.style.transform = 'translateY(0)';
-            }, index * 200);
-            
-            // 添加到容器
-            container.appendChild(card);
-        });
+                // 设置状态徽章
+                const recommended = card.querySelector('.recommended');
+                recommended.style.display = 'none';
+                
+                // 设置卡片出现动画
+                const cardEl = card.querySelector('.github-card');
+                setTimeout(() => {
+                    cardEl.style.opacity = '1';
+                    cardEl.style.transform = 'translateY(0)';
+                }, index * 200);
+                
+                // 添加到容器
+                container.appendChild(card);
+            });
+        }
         
         // 添加动作按钮事件监听器
         setTimeout(() => {

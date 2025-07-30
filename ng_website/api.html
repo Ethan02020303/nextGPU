@@ -150,7 +150,7 @@
 <span class="code-keyword">import</span> json
 
 <span class="code-comment"># API端点</span>
-url = <span class="code-string">"http://nextgpu.aihub.cool:9080/session/publish"</span>
+url = <span class="code-string">"https://www.nextgpu.net/session/publish"</span>
 
 <span class="code-comment"># 请求头</span>
 headers = {
@@ -198,7 +198,7 @@ response = requests.post(<span class="code-url">url</span>, headers=<span class=
 <span class="code-keyword">const</span> fetch = require('node-fetch');
 
 <span class="code-comment">// API端点</span>
-<span class="code-keyword">const</span> url = <span class="code-string">"http://nextgpu.aihub.cool:9080/session/publish"</span>;
+<span class="code-keyword">const</span> url = <span class="code-string">"https://www.nextgpu.net/session/publish"</span>;
 
 <span class="code-comment">// 请求参数</span>
 <span class="code-keyword">const</span> {
@@ -243,7 +243,7 @@ fetch(url, {
                                 <button class="copy-btn">复制代码</button>
                             </div>
                             <pre class="api-demo-code">
-curl -X POST "http://nextgpu.aihub.cool:9080/session/publish" \
+curl -X POST "https://www.nextgpu.net/session/publish" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -295,7 +295,9 @@ curl -X POST "http://nextgpu.aihub.cool:9080/session/publish" \
                 
                 <!-- 修复后的FAQ部分 -->
                 <div class="faq-section">
-                    <h2 class="faq-header">常见问题</h2>
+                    <div class="card-header">
+                        <h3>常见问题</h3>
+                    </div>
                     
                     <div class="faq-container">
                         <div class="faq-item">
